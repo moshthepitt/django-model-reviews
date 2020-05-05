@@ -1,6 +1,8 @@
 """Models module for approvals."""
 
 from django.conf import settings
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -49,6 +51,11 @@ class Approval(AbstractApproval):
         on_delete=models.CASCADE,
         help_text=_("The user who submitted to request for approval"),
     )
+    content_type = models.ForeignKey(
+        ContentType, verbose_name=_("Content Type"), on_delete=models.CASCADE
+    )
+    object_id = models.PositiveIntegerField(_("Object ID"), db_index=True)
+    content_object = GenericForeignKey("content_type", "object_id")
     sandbox = JSONField(
         _("Sandbox Data"), encoder=DjangoJSONEncoder, default=dict, blank=False
     )
@@ -65,6 +72,7 @@ class Approval(AbstractApproval):
         abstract = False
         verbose_name = _("Approval")
         verbose_name_plural = _("Approvals")
+        indexes = [models.Index(fields=["content_type", "object_id"])]
 
     def __str__(self):
         """Unicode representation of Approval."""

@@ -13,9 +13,10 @@ class ModelReviewsConfig(AppConfig):
     def ready(self):
         """Do stuff when the app is ready."""
         # set up app settings
-        # pylint: disable=import-outside-toplevel
+        # pylint: disable=import-outside-toplevel,unused-import
         from django.conf import settings
         import model_reviews.settings as defaults
+        import model_reviews.signals  # noqa
 
         for name in dir(defaults):
             if name.isupper() and not hasattr(settings, name):

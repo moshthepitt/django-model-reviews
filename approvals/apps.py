@@ -1,19 +1,17 @@
-"""apps module for approvals."""
+"""apps module for model reviews."""
 from django.apps import AppConfig
 from django.utils.translation import ugettext_lazy as _
 
 
-class ApprovalsConfig(AppConfig):
-    """App config for approvals."""
+class ModelReviewsConfig(AppConfig):
+    """App config for model reviews."""
 
-    name = "approvals"
-    app_label = "approvals"
-    verbose_name = _("Approvals")
+    name = "model_reviews"
+    app_label = "model_reviews"
+    verbose_name = _("Model Reviews")
 
     def ready(self):
-        """
-        Do stuff when the app is ready
-        """
+        """Do stuff when the app is ready."""
         # set up app settings
         # pylint: disable=import-outside-toplevel
         from django.conf import settings

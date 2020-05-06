@@ -1,1 +1,1 @@
-"""Settings module for approvals."""
+"""Settings module for model reviews."""

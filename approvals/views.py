@@ -1,1 +1,1 @@
-"""Views module for approvals."""
+"""Views module for model reviews."""

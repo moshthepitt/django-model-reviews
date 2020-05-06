@@ -87,11 +87,11 @@ class Reviewer(models.Model):
     """Model definition for Reviewer."""
 
     user = models.ForeignKey(USER, verbose_name=_("User"), on_delete=models.CASCADE)
-    created = models.DateTimeField(_("Created"), auto_now_add=True)
-    modified = models.DateTimeField(_("Modified"), auto_now=True)
     review = models.ForeignKey(
         "ModelReview", verbose_name=_("Model Review"), on_delete=models.CASCADE
     )
+    created = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified = models.DateTimeField(_("Modified"), auto_now=True)
     level = models.IntegerField(
         _("Level"),
         default=0,

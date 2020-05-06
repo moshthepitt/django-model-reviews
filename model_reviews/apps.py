@@ -15,7 +15,7 @@ class ModelReviewsConfig(AppConfig):
         # set up app settings
         # pylint: disable=import-outside-toplevel
         from django.conf import settings
-        import approvals.settings as defaults
+        import model_reviews.settings as defaults
 
         for name in dir(defaults):
             if name.isupper() and not hasattr(settings, name):

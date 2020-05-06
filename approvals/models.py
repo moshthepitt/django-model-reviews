@@ -1,4 +1,4 @@
-"""Models module for approvals."""
+"""Models module for model reviews."""
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -11,8 +11,8 @@ from django.utils.translation import gettext_lazy as _
 USER = settings.AUTH_USER_MODEL
 
 
-class AbstractApproval(models.Model):
-    """Model definition for AbstractApproval."""
+class AbstractReview(models.Model):
+    """Model definition for AbstractReview."""
 
     APPROVED = "1"
     REJECTED = "2"
@@ -37,19 +37,19 @@ class AbstractApproval(models.Model):
     review_Comments = models.TextField(_("Review Comments"), blank=True, default="")
 
     class Meta:
-        """Meta definition for AbstractApproval."""
+        """Meta definition for AbstractReview."""
 
         abstract = True
 
 
-class Approval(AbstractApproval):
-    """Model definition for Approval."""
+class ModelReview(AbstractReview):
+    """Model definition for ModelReview."""
 
     user = models.ForeignKey(
         USER,
         verbose_name=_("User"),
         on_delete=models.CASCADE,
-        help_text=_("The user who submitted to request for approval"),
+        help_text=_("The user who submitted the request for review"),
     )
     content_type = models.ForeignKey(
         ContentType, verbose_name=_("Content Type"), on_delete=models.CASCADE
@@ -65,19 +65,19 @@ class Approval(AbstractApproval):
         USER,
         verbose_name=_("Reviewer(s)"),
         through="Reviewer",
-        through_fields=("user", "approval"),
+        through_fields=("user", "review"),
     )
 
     class Meta:
-        """Meta definition for Approval."""
+        """Meta definition for ModelReview."""
 
         abstract = False
-        verbose_name = _("Approval")
-        verbose_name_plural = _("Approvals")
+        verbose_name = _("Model Review")
+        verbose_name_plural = _("Model Reviews")
         indexes = [models.Index(fields=["content_type", "object_id"])]
 
     def __str__(self):
-        """Unicode representation of Approval."""
+        """Unicode representation of ModelReview."""
         return f"{self.content_object} review"
 
 
@@ -87,8 +87,8 @@ class Reviewer(models.Model):
     user = models.ForeignKey(USER, verbose_name=_("User"), on_delete=models.CASCADE)
     created = models.DateTimeField(_("Created"), auto_now_add=True)
     modified = models.DateTimeField(_("Modified"), auto_now=True)
-    approval = models.ForeignKey(
-        "Approval", verbose_name=_("Approval"), on_delete=models.CASCADE
+    review = models.ForeignKey(
+        "ModelReview", verbose_name=_("Model Review"), on_delete=models.CASCADE
     )
     level = models.IntegerField(
         _("Level"),
@@ -116,4 +116,4 @@ class Reviewer(models.Model):
 
     def __str__(self):
         """Unicode representation of Reviewer."""
-        return f"{self.user} review for {self.approval}"
+        return f"{self.user} review for {self.review}"

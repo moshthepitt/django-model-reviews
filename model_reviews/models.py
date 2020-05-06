@@ -52,6 +52,9 @@ class ModelReview(AbstractReview):
         related_name="modelreview_user",
         verbose_name=_("User"),
         on_delete=models.CASCADE,
+        null=True,
+        default=None,
+        blank=True,
         help_text=_("The user who submitted the request for review"),
     )
     content_type = models.ForeignKey(

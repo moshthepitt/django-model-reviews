@@ -183,6 +183,9 @@ class Migration(migrations.Migration):
                 related_name="modelreview_user",
                 to=settings.AUTH_USER_MODEL,
                 verbose_name="User",
+                blank=True,
+                default=None,
+                null=True,
             ),
         ),
         migrations.AddIndex(

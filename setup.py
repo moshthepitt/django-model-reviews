@@ -4,7 +4,7 @@ import sys
 
 from setuptools import find_packages, setup
 
-import approvals
+import model_reviews as reviews
 
 with open(os.path.join(os.path.dirname(__file__), "README.md")) as readme:
     README = readme.read()
@@ -16,20 +16,20 @@ if sys.argv[-1] == "publish":
     os.system("python setup.py sdist bdist_wheel")
     os.system("twine upload dist/* --skip-existing")
     print("You probably want to also tag the version now:")
-    print(f"  git tag -a v{approvals.__version__} -m 'version {approvals.__version__}'")
+    print(f"  git tag -a v{reviews.__version__} -m 'version {reviews.__version__}'")
     print("  git push --tags")
     sys.exit()
 
 setup(
-    name="django-approvals",
-    version=approvals.__version__,
-    description="Easy moderation of changes made to models",
+    name="django-model_reviews",
+    version=reviews.__version__,
+    description="Easy moderation of changes made to Django models",
     long_description=README,
     long_description_content_type="text/markdown",
     license="MIT",
     author="Kelvin Jayanoris",
     author_email="kelvin@jayanoris.com",
-    url="https://github.com/moshthepitt/django-approvals",
+    url="https://github.com/moshthepitt/django-model-reviews",
     packages=find_packages(exclude=["docs", "tests"]),
     install_requires=["Django >=2.2"],
     classifiers=[

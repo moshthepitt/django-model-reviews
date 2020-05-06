@@ -17,7 +17,7 @@ click==7.1.1              # via black
 coverage==5.1             # via -r requirements/dev.in
 decorator==4.4.2          # via ipython, traitlets
 distlib==0.3.0            # via virtualenv
-django==3.0.5             # via django-approvals, model-mommy
+django==3.0.5             # via django-model-reviews, model-mommy
 entrypoints==0.3          # via flake8
 filelock==3.0.12          # via tox, virtualenv
 flake8==3.7.9             # via -r requirements/dev.in

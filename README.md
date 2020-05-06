@@ -1,4 +1,4 @@
-# django-approvals
+# django-model-reviews
 
 Easy moderation of changes made to models.
 

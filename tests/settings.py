@@ -16,13 +16,13 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     # custom
-    "approvals",
+    "model_reviews",
 ]
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_approvals",
+        "NAME": "django_model_reviews",
         "USER": "postgres",
         "PASSWORD": "",
         "HOST": "127.0.0.1",

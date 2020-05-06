@@ -78,7 +78,7 @@ class Approval(AbstractApproval):
 
     def __str__(self):
         """Unicode representation of Approval."""
-        return "this"
+        return f"{self.content_object} review"
 
 
 class Reviewer(models.Model):
@@ -116,4 +116,4 @@ class Reviewer(models.Model):
 
     def __str__(self):
         """Unicode representation of Reviewer."""
-        return "this"
+        return f"{self.user} review for {self.approval}"

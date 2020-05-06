@@ -44,7 +44,12 @@ class Migration(migrations.Migration):
                         verbose_name="Review Status",
                     ),
                 ),
-                ("review_date", models.DateTimeField(verbose_name="Review Date")),
+                (
+                    "review_date",
+                    models.DateTimeField(
+                        blank=True, default=None, null=True, verbose_name="Review Date"
+                    ),
+                ),
                 (
                     "review_reason",
                     models.TextField(
@@ -52,7 +57,7 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "review_Comments",
+                    "review_comments",
                     models.TextField(
                         blank=True, default="", verbose_name="Review Comments"
                     ),

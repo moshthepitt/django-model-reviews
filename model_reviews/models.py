@@ -32,9 +32,11 @@ class AbstractReview(models.Model):
         blank=True,
         db_index=True,
     )
-    review_date = models.DateTimeField(_("Review Date"))
+    review_date = models.DateTimeField(
+        _("Review Date"), blank=True, default=None, null=True
+    )
     review_reason = models.TextField(_("Review Reason"), blank=True, default="")
-    review_Comments = models.TextField(_("Review Comments"), blank=True, default="")
+    review_comments = models.TextField(_("Review Comments"), blank=True, default="")
 
     class Meta:
         """Meta definition for AbstractReview."""

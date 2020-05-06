@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Settings for tests
-"""
+"""Settings for tests."""
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))

@@ -47,6 +47,7 @@ class ModelReview(AbstractReview):
 
     user = models.ForeignKey(
         USER,
+        related_name="modelreview_user",
         verbose_name=_("User"),
         on_delete=models.CASCADE,
         help_text=_("The user who submitted the request for review"),
@@ -63,9 +64,10 @@ class ModelReview(AbstractReview):
     )
     reviewers = models.ManyToManyField(
         USER,
+        related_name="modelreview_reviewers",
         verbose_name=_("Reviewer(s)"),
         through="Reviewer",
-        through_fields=("user", "review"),
+        through_fields=("review", "user"),
     )
 
     class Meta:

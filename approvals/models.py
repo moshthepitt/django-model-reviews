@@ -56,6 +56,8 @@ class Approval(AbstractApproval):
     )
     object_id = models.PositiveIntegerField(_("Object ID"), db_index=True)
     content_object = GenericForeignKey("content_type", "object_id")
+    created = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified = models.DateTimeField(_("Modified"), auto_now=True)
     sandbox = JSONField(
         _("Sandbox Data"), encoder=DjangoJSONEncoder, default=dict, blank=False
     )
@@ -83,6 +85,8 @@ class Reviewer(models.Model):
     """Model definition for Reviewer."""
 
     user = models.ForeignKey(USER, verbose_name=_("User"), on_delete=models.CASCADE)
+    created = models.DateTimeField(_("Created"), auto_now_add=True)
+    modified = models.DateTimeField(_("Modified"), auto_now=True)
     approval = models.ForeignKey(
         "Approval", verbose_name=_("Approval"), on_delete=models.CASCADE
     )

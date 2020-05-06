@@ -15,6 +15,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     # custom
     "model_reviews",
+    "tests.test_app",
 ]
 
 DATABASES = {

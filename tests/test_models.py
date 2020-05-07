@@ -53,6 +53,27 @@ class TestCRUD(TestCase):
         self.assertEqual("foo", test_model.review_reason)
         self.assertEqual("bar", test_model.review_comments)
 
+    def test_modelreview_rejection(self):
+        """Test that you can do model review rejections."""
+        test_model = mommy.make("test_app.TestModel", name="Test 2")
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+
+        date = datetime(2017, 6, 5, 0, 0, 0, tzinfo=pytz.timezone(settings.TIME_ZONE))
+
+        review.review_status = ModelReview.REJECTED
+        review.review_date = date
+        review.review_reason = "foofoo"
+        review.review_comments = "barbar"
+        review.save()
+
+        test_model.refresh_from_db()
+
+        self.assertEqual(TestModel.REJECTED, test_model.review_status)
+        self.assertEqual(date, test_model.review_date)
+        self.assertEqual("foofoo", test_model.review_reason)
+        self.assertEqual("barbar", test_model.review_comments)
+
     def test_reviewed_obj_update(self):  # pylint: disable=too-many-statements
         """Test what happens when reviewed object is updated."""
         test_model = mommy.make("test_app.TestModel", name="Test 3")

@@ -1,6 +1,6 @@
 """Models module for model reviews."""
 
-from typing import List
+from typing import List, Optional
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
@@ -115,6 +115,23 @@ class ModelReview(AbstractReview):
         """Unicode representation of ModelReview."""
         return f"{self.content_object} review"
 
+    def get_diff(self, source: models.Model = None) -> Optional[List[str]]:
+        """
+        Return the difference between the source data and the data in review model.
+
+        Returns:
+            A list of monitored field names that are different in the source.
+
+        """
+        source = source or self.content_object
+        data = self.sandbox
+
+        source_data = {
+            field: getattr(source, field) for field in self._get_monitored_fields()
+        }
+
+        return [key for key in data.keys() if data[key] != source_data[key]] or None
+
     def _get_monitored_fields(self, source: models.Model = None) -> List[str]:
         """Return the list of monitored field names."""
         source = source or self.content_object
@@ -124,13 +141,14 @@ class ModelReview(AbstractReview):
         """Check if review is needed."""
         return self.review_status == ModelReview.PENDING
 
-    def update_sandbox(self, source: models.Model = None) -> None:
+    def update_sandbox(self, source: models.Model = None, do_save: bool = True) -> None:
         """Update fields of the sandbox to reflect the state of the source."""
         source = source or self.content_object
         fields = self._get_monitored_fields(source=source)
         values = {key: getattr(source, key) for key in fields if hasattr(source, key)}
         self.sandbox.update(values)
-        self.save()
+        if do_save:
+            self.save()
 
 
 class Reviewer(models.Model):

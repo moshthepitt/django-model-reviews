@@ -49,6 +49,6 @@ class TestCRUD(TestCase):
         test_model.refresh_from_db()
 
         self.assertEqual(TestModel.APPROVED, test_model.review_status)
-        self.assertEqual(date, review.review_date)
-        self.assertEqual("foo", review.review_reason)
-        self.assertEqual("bar", review.review_comments)
+        self.assertEqual(date, test_model.review_date)
+        self.assertEqual("foo", test_model.review_reason)
+        self.assertEqual("bar", test_model.review_comments)

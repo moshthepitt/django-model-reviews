@@ -1,5 +1,7 @@
 """Models module for model reviews."""
 
+from typing import List
+
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -23,6 +25,16 @@ class AbstractReview(models.Model):
         (PENDING, _("Pending")),
         (REJECTED, _("Rejected")),
     )
+
+    # model_review options
+    monitored_fields: List[str] = [
+        "review_status",
+        "review_date",
+        "review_reason",
+        "review_comments",
+    ]
+
+    # model fields start here
 
     review_status = models.CharField(
         _("Review Status"),
@@ -102,6 +114,23 @@ class ModelReview(AbstractReview):
     def __str__(self):
         """Unicode representation of ModelReview."""
         return f"{self.content_object} review"
+
+    def _get_monitored_fields(self, source: models.Model = None) -> List[str]:
+        """Return the list of monitored field names."""
+        source = source or self.content_object
+        return source.monitored_fields
+
+    def needs_review(self) -> bool:
+        """Check if review is needed."""
+        return self.review_status == ModelReview.PENDING
+
+    def update_sandbox(self, source: models.Model = None) -> None:
+        """Update fields of the sandbox to reflect the state of the source."""
+        source = source or self.content_object
+        fields = self._get_monitored_fields(source=source)
+        values = {key: getattr(source, key) for key in fields if hasattr(source, key)}
+        self.sandbox.update(values)
+        self.save()
 
 
 class Reviewer(models.Model):

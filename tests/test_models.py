@@ -105,10 +105,10 @@ class TestCRUD(TestCase):
         self.assertEqual(None, review.review_date)
         self.assertEqual("", review.review_reason)
         self.assertEqual("", review.review_comments)
-        self.assertEqual(ModelReview.APPROVED, review.sandbox.review_status)
-        self.assertEqual(approve_date, review.sandbox.review_date)
-        self.assertEqual("<3", review.sandbox.review_reason)
-        self.assertEqual("I like", review.sandbox.review_comments)
+        self.assertEqual(ModelReview.APPROVED, review.sandbox["review_status"])
+        self.assertEqual("2017-06-05T00:00:00+02:27", review.sandbox["review_date"])
+        self.assertEqual("<3", review.sandbox["review_reason"])
+        self.assertEqual("I like", review.sandbox["review_comments"])
 
         test_model.refresh_from_db()  # nothing changed on the reviewed model
         self.assertEqual(ModelReview.PENDING, test_model.review_status)
@@ -132,10 +132,10 @@ class TestCRUD(TestCase):
         self.assertEqual(None, review.review_date)
         self.assertEqual("", review.review_reason)
         self.assertEqual("", review.review_comments)
-        self.assertEqual(ModelReview.REJECTED, review.sandbox.review_status)
-        self.assertEqual(reject_date, review.sandbox.review_date)
-        self.assertEqual(":(", review.sandbox.review_reason)
-        self.assertEqual("No like", review.sandbox.review_comments)
+        self.assertEqual(ModelReview.REJECTED, review.sandbox["review_status"])
+        self.assertEqual("2017-06-06T00:00:00+02:27", review.sandbox["review_date"])
+        self.assertEqual(":(", review.sandbox["review_reason"])
+        self.assertEqual("No like", review.sandbox["review_comments"])
 
         test_model.refresh_from_db()  # nothing changed on the reviewed model
         self.assertEqual(ModelReview.PENDING, test_model.review_status)

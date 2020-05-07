@@ -43,6 +43,22 @@ class AbstractReview(models.Model):
 
         abstract = True
 
+    def revert(self) -> bool:
+        """
+        Revert the instance to its last saved state.
+
+        This method deletes unsaved changes on source model instance.
+
+        Returns:
+            `True` if revert was possible, `False` otherwise.
+        """
+        model = self._meta.model
+        try:
+            self.refresh_from_db()
+            return True
+        except model.DoesNotExist:
+            return False
+
 
 class ModelReview(AbstractReview):
     """Model definition for ModelReview."""

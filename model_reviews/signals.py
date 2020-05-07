@@ -42,6 +42,7 @@ def approvable_after_save(  # pylint: disable=bad-continuation
         if created:
             obj_type = ContentType.objects.get_for_model(instance)
             review = ModelReview(content_type=obj_type, object_id=instance.pk)
+            review.update_sandbox(source=instance, do_save=False)
             review.save()
 
 

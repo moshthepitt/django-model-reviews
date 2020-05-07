@@ -23,9 +23,14 @@ def approvable_before_save(  # pylint: disable=bad-continuation
             review, _ = ModelReview.objects.get_or_create(
                 content_type=obj_type, object_id=instance.pk
             )
+            diff = review.get_diff(source=instance)
+
             if review.needs_review():
-                review.update_sandbox(source=instance)
-                instance.revert()
+                if diff:
+                    # only update the sandbox if review is needed and there is a diff
+                    review.update_sandbox(source=instance)
+                    # only revert the instance if there is a diff
+                    instance.revert()
 
 
 @receiver(post_save)

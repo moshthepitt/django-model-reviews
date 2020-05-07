@@ -12,10 +12,12 @@ def approvable_before_save(  # pylint: disable=bad-continuation
     sender, instance, **kwargs
 ):  # pylint: disable=unused-argument
     """
-    Manage data in the approvable item before it is saved.
+    Perform actions before the approvable item is saved.
 
-    For already created objects, update the sandbox with current object status,
-    and then revert the changes in the object before saving.
+    For already created objects:
+        1. Get the corresponding ModelReview object
+        2. Update the ModelReview object is created sandbox
+        3. Revert the changes in the approvable object before saving
     """
     if isinstance(instance, AbstractReview) and not isinstance(instance, ModelReview):
         if instance.pk is not None:  # deal with updated instances only
@@ -37,7 +39,13 @@ def approvable_before_save(  # pylint: disable=bad-continuation
 def approvable_after_save(  # pylint: disable=bad-continuation
     sender, instance, raw, created, **kwargs
 ):  # pylint: disable=unused-argument
-    """Manage data in the approvable item after it has been."""
+    """
+    Perform actions after the approvable item has been saved.
+
+    This is only relevant for new objects, where:
+        1. A ModelReview object is created
+        2. The sandbox on ModelReview is populated
+    """
     if isinstance(instance, AbstractReview) and not isinstance(instance, ModelReview):
         if created:
             obj_type = ContentType.objects.get_for_model(instance)
@@ -50,6 +58,6 @@ def approvable_after_save(  # pylint: disable=bad-continuation
 def modelreview_after_save(  # pylint: disable=bad-continuation
     sender, instance, raw, created, **kwargs
 ):  # pylint: disable=unused-argument
-    """Manage data in the approvable item after it has been."""
+    """Perform actions after the ModelReview object has been saved."""
     if not instance.needs_review():
         process_review(instance)

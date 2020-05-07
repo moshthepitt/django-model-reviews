@@ -32,8 +32,8 @@ class TestCRUD(TestCase):
         self.assertEqual("", review.review_reason)
         self.assertEqual("", review.review_comments)
 
-    def test_modelreview(self):
-        """Test that you can do model reviews."""
+    def test_modelreview_approval(self):
+        """Test that you can do model review approvals."""
         test_model = mommy.make("test_app.TestModel", name="Test 2")
         obj_type = ContentType.objects.get_for_model(test_model)
         review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)

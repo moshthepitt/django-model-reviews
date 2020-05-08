@@ -8,6 +8,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.postgres.fields import JSONField
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
 USER = settings.AUTH_USER_MODEL
@@ -33,6 +34,7 @@ class AbstractReview(models.Model):
         "review_reason",
         "review_comments",
     ]
+    side_effection_function: Optional[str] = None
 
     # model fields start here
 
@@ -70,6 +72,17 @@ class AbstractReview(models.Model):
             return True
         except model.DoesNotExist:
             return False
+
+    def run_side_effect(self, review_obj: models.Model = None) -> None:
+        """
+        Run side effect function.
+
+        This method runs the side effect function defined on the approvable model.
+        The side effect is run once after an approval/rejection.
+        """
+        if self.side_effection_function:
+            side_effect = import_string(self.side_effection_function)
+            side_effect(review_obj=review_obj)
 
 
 class ModelReview(AbstractReview):

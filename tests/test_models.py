@@ -1,5 +1,6 @@
 """Test models."""
 from datetime import datetime
+from unittest.mock import patch
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -32,7 +33,8 @@ class TestCRUD(TestCase):
         self.assertEqual("", review.review_reason)
         self.assertEqual("", review.review_comments)
 
-    def test_modelreview_approval(self):
+    @patch("tests.test_app.models.side_effects")
+    def test_modelreview_approval(self, mock):
         """Test that you can do model review approvals."""
         test_model = mommy.make("test_app.TestModel", name="Test 2")
         obj_type = ContentType.objects.get_for_model(test_model)
@@ -53,7 +55,12 @@ class TestCRUD(TestCase):
         self.assertEqual("foo", test_model.review_reason)
         self.assertEqual("bar", test_model.review_comments)
 
-    def test_modelreview_rejection(self):
+        # assert that mock is called with the expected params
+        review.refresh_from_db()
+        mock.assert_called_once_with(review_obj=review)
+
+    @patch("tests.test_app.models.side_effects")
+    def test_modelreview_rejection(self, mock):
         """Test that you can do model review rejections."""
         test_model = mommy.make("test_app.TestModel", name="Test 2")
         obj_type = ContentType.objects.get_for_model(test_model)
@@ -73,6 +80,10 @@ class TestCRUD(TestCase):
         self.assertEqual(date, test_model.review_date)
         self.assertEqual("foofoo", test_model.review_reason)
         self.assertEqual("barbar", test_model.review_comments)
+
+        # assert that mock is called with the expected params
+        review.refresh_from_db()
+        mock.assert_called_once_with(review_obj=review)
 
     def test_reviewed_obj_update(self):  # pylint: disable=too-many-statements
         """Test what happens when reviewed object is updated."""

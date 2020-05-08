@@ -10,6 +10,9 @@ class TestModel(AbstractReview):
 
     name = models.CharField(max_length=100)
 
+    # model_review options
+    side_effection_function = "tests.test_app.models.side_effects"
+
     class Meta:
         """Meta definition for TestModel."""
 
@@ -20,3 +23,12 @@ class TestModel(AbstractReview):
     def __str__(self):
         """Unicode representation of TestModel."""
         return self.name
+
+
+def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument
+    """
+    Run side effects.
+
+    This is a dummy side effects function, for testing.
+    """
+    return None

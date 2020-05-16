@@ -14,7 +14,7 @@ from model_reviews.models import ModelReview
 from .test_app.models import TestModel
 
 
-class TestCRUD(TestCase):
+class TestModels(TestCase):
     """Test class for models."""
 
     def test_model_inheritance(self):

@@ -1,0 +1,2 @@
+"""Constants module."""
+USER = "user"

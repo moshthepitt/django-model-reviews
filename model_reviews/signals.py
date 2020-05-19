@@ -2,6 +2,7 @@
 from django.contrib.contenttypes.models import ContentType
 from django.db.models.signals import post_save, pre_save
 from django.dispatch.dispatcher import receiver
+from django.utils.module_loading import import_string
 
 from model_reviews.models import AbstractReview, ModelReview
 from model_reviews.utils import process_review
@@ -52,6 +53,17 @@ def approvable_after_save(  # pylint: disable=bad-continuation
             review = ModelReview(content_type=obj_type, object_id=instance.pk)
             review.update_sandbox(source=instance, do_save=False)
             review.save()
+
+
+@receiver(pre_save, sender=ModelReview)
+def modelreview_before_save(  # pylint: disable=bad-continuation
+    sender, instance, **kwargs
+):  # pylint: disable=unused-argument
+    """Perform actions before the ModelReview object has been saved."""
+    # run set_user_function
+    if instance.content_object and instance.content_object.set_user_function:
+        set_user_function = import_string(instance.content_object.set_user_function)
+        set_user_function(review_obj=instance)
 
 
 @receiver(post_save, sender=ModelReview)

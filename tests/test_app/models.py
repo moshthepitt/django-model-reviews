@@ -34,6 +34,9 @@ class TestModel2(AbstractReview):
         User, on_delete=models.CASCADE, null=True, default=None, blank=True
     )
 
+    # model_review options
+    side_effection_function = "tests.test_app.models.side_effects"
+
 
 def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument
     """

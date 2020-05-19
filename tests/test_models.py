@@ -72,7 +72,7 @@ class TestModels(TestCase):
     @patch("tests.test_app.models.side_effects")
     def test_modelreview_rejection(self, mock):
         """Test that you can do model review rejections."""
-        test_model = mommy.make("test_app.TestModel", name="Test 2")
+        test_model = mommy.make("test_app.TestModel2", name="Test 2")
         obj_type = ContentType.objects.get_for_model(test_model)
         review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
 

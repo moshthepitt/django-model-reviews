@@ -1,5 +1,6 @@
 """models module for test app."""
 
+from django.contrib.auth.models import User
 from django.db import models
 
 from model_reviews.models import AbstractReview
@@ -23,6 +24,15 @@ class TestModel(AbstractReview):
     def __str__(self):
         """Unicode representation of TestModel."""
         return self.name
+
+
+class TestModel2(AbstractReview):
+    """Model definition for TestModel."""
+
+    name = models.CharField(max_length=100)
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True, default=None, blank=True
+    )
 
 
 def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument

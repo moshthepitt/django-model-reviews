@@ -30,8 +30,18 @@ class TestModels(TestCase):
         review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(None, review.review_date)
+        self.assertEqual(None, review.user)
         self.assertEqual("", review.review_reason)
         self.assertEqual("", review.review_comments)
+
+        # test with a model that has a user
+        user = mommy.make("auth.User", username="Test1")
+        test_model2 = mommy.make("test_app.TestModel2", user=user)
+        review2 = ModelReview.objects.get(
+            content_type=ContentType.objects.get_for_model(test_model2),
+            object_id=test_model2.id,
+        )
+        self.assertEqual(user, review2.user)
 
     @patch("tests.test_app.models.side_effects")
     def test_modelreview_approval(self, mock):

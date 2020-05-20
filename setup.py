@@ -31,7 +31,7 @@ setup(
     author_email="kelvin@jayanoris.com",
     url="https://github.com/moshthepitt/django-model-reviews",
     packages=find_packages(exclude=["docs", "tests"]),
-    install_requires=["Django >=2.2"],
+    install_requires=["Django >=2.2", "django-contrib-comments"],
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3.6",

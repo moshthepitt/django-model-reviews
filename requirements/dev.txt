@@ -17,7 +17,8 @@ click==7.1.1              # via black
 coverage==5.1             # via -r requirements/dev.in
 decorator==4.4.2          # via ipython, traitlets
 distlib==0.3.0            # via virtualenv
-django==3.0.5             # via django-model-reviews, model-mommy
+django-contrib-comments==1.9.2  # via django-model-reviews
+django==3.0.5             # via django-contrib-comments, django-model-reviews, model-mommy
 entrypoints==0.3          # via flake8
 filelock==3.0.12          # via tox, virtualenv
 flake8==3.7.9             # via -r requirements/dev.in
@@ -58,7 +59,7 @@ pyparsing==2.4.7          # via packaging
 pytz==2019.3              # via django
 pyyaml==5.3.1             # via pre-commit
 regex==2020.4.4           # via black
-six==1.14.0               # via astroid, packaging, tox, traitlets, virtualenv
+six==1.14.0               # via astroid, django-contrib-comments, packaging, tox, traitlets, virtualenv
 snowballstemmer==2.0.0    # via pydocstyle
 sqlparse==0.3.1           # via django
 toml==0.10.0              # via black, pre-commit, pylint, tox

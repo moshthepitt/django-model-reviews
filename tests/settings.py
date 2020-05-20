@@ -16,6 +16,8 @@ INSTALLED_APPS = [
     # custom
     "model_reviews",
     "tests.test_app",
+    # third party
+    "django_comments",
 ]
 
 DATABASES = {

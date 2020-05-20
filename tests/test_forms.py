@@ -46,8 +46,6 @@ class TestForms(TestCase):
             "review": review,
             "reviewer": reviewer,
             "review_status": ModelReview.APPROVED,
-            "review_reason": "Love it",
-            "review_comments": "It is nice",
         }
 
         form = PerformReview(data=data)
@@ -59,12 +57,8 @@ class TestForms(TestCase):
         test_model.refresh_from_db()
 
         self.assertEqual(ModelReview.APPROVED, review.review_status)
-        self.assertEqual("Love it", review.review_reason)
-        self.assertEqual("It is nice", review.review_comments)
 
         self.assertEqual(ModelReview.APPROVED, test_model.review_status)
-        self.assertEqual("Love it", test_model.review_reason)
-        self.assertEqual("It is nice", test_model.review_comments)
 
         self.assertEqual(True, reviewer.reviewed)
         self.assertEqual(mocked_now, reviewer.review_date)

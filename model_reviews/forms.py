@@ -1,4 +1,4 @@
-"""forms module for model_reviews"""
+"""forms module for model_reviews."""
 from django import forms
 from django.conf import settings
 from django.db import transaction

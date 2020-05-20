@@ -35,6 +35,7 @@ class AbstractReview(models.Model):
         "review_comments",
     ]
     side_effection_function: Optional[str] = None
+    set_reviewers_function: Optional[str] = None
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
 
     # model fields start here

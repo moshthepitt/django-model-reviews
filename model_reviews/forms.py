@@ -22,16 +22,6 @@ class PerformReview(forms.Form):
         choices=ModelReview.STATUS_CHOICES,
         required=True,
     )
-    review_reason = forms.CharField(
-        label=_(settings.MODELREVIEW_FORM_REASON_FIELD_LABEL),
-        widget=forms.Textarea,
-        required=False,
-    )
-    review_comments = forms.CharField(
-        label=_(settings.MODELREVIEW_FORM_COMMENTS_FIELD_LABEL),
-        widget=forms.Textarea,
-        required=False,
-    )
 
     def __init__(self, *args, **kwargs):
         """Initialize the form."""
@@ -50,16 +40,6 @@ class PerformReview(forms.Form):
             )
         return data
 
-    def clean(self):
-        """Clean the entire form."""
-        cleaned_data = super().clean()
-        review_status = cleaned_data.get("review_status")
-        if review_status == ModelReview.REJECTED:
-            review_reason = cleaned_data.get("review_reason")
-            if not review_reason:
-                msg = _(settings.MODELREVIEW_FORM_REVIEW_MISSING_REASON)
-                self.add_error("review_reason", msg)
-
     def save(self):
         """Save the form."""
         data = self.cleaned_data
@@ -73,6 +53,4 @@ class PerformReview(forms.Form):
             reviewer.save()
             # save review
             review.review_status = data["review_status"]
-            review.review_reason = data.get("review_reason", "")
-            review.review_comments = data.get("review_comments", "")
             review.save()

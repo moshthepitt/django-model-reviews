@@ -11,6 +11,8 @@ from django.db import models
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
+from model_reviews.constants import SANDBOX_FIELD
+
 USER = settings.AUTH_USER_MODEL
 
 
@@ -130,7 +132,7 @@ class ModelReview(AbstractReview):
 
         """
         source = source or self.content_object
-        data = self.data
+        data = self.data.get(SANDBOX_FIELD, dict())
 
         source_data = {
             field: getattr(source, field) for field in self._get_monitored_fields()
@@ -152,7 +154,10 @@ class ModelReview(AbstractReview):
         source = source or self.content_object
         fields = self._get_monitored_fields(source=source)
         values = {key: getattr(source, key) for key in fields if hasattr(source, key)}
-        self.sandbox.update(values)
+        if self.data.get(SANDBOX_FIELD):
+            self.data[SANDBOX_FIELD].update(values)
+        else:
+            self.data[SANDBOX_FIELD] = values
         if do_save:
             self.save()
 

@@ -28,12 +28,7 @@ class AbstractReview(models.Model):
     )
 
     # model_review options
-    monitored_fields: List[str] = [
-        "review_status",
-        "review_date",
-        "review_reason",
-        "review_comments",
-    ]
+    monitored_fields: List[str] = ["review_status", "review_date"]
     side_effection_function: Optional[str] = None
     set_reviewers_function: Optional[str] = None
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
@@ -51,8 +46,6 @@ class AbstractReview(models.Model):
     review_date = models.DateTimeField(
         _("Review Date"), blank=True, default=None, null=True
     )
-    review_reason = models.TextField(_("Review Reason"), blank=True, default="")
-    review_comments = models.TextField(_("Review Comments"), blank=True, default="")
 
     class Meta:
         """Meta definition for AbstractReview."""
@@ -107,9 +100,7 @@ class ModelReview(AbstractReview):
     content_object = GenericForeignKey("content_type", "object_id")
     created = models.DateTimeField(_("Created"), auto_now_add=True)
     modified = models.DateTimeField(_("Modified"), auto_now=True)
-    sandbox = JSONField(
-        _("Sandbox Data"), encoder=DjangoJSONEncoder, default=dict, blank=False
-    )
+    data = JSONField(_("Data"), encoder=DjangoJSONEncoder, default=dict, blank=False)
     reviewers = models.ManyToManyField(
         USER,
         related_name="modelreview_reviewers",
@@ -139,7 +130,7 @@ class ModelReview(AbstractReview):
 
         """
         source = source or self.content_object
-        data = self.sandbox
+        data = self.data
 
         source_data = {
             field: getattr(source, field) for field in self._get_monitored_fields()

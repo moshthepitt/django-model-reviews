@@ -3,7 +3,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 
-from model_reviews.models import AbstractReview
+from model_reviews.models import AbstractReview, Reviewer
 
 
 class TestModel(AbstractReview):
@@ -35,7 +35,7 @@ class TestModel2(AbstractReview):
     )
 
     # model_review options
-    side_effection_function = "tests.test_app.models.side_effects"
+    set_reviewers_function = "tests.test_app.models.set_reviewers"
 
 
 def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument
@@ -45,3 +45,15 @@ def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument
     This is a dummy side effects function, for testing.
     """
     return None
+
+
+def set_reviewers(review_obj: models.Model):
+    """Set reviewers."""
+    try:
+        user = User.objects.get(username="finalboss")
+    except User.DoesNotExist:
+        pass
+    else:
+        if not Reviewer.objects.filter(user=user, review=review_obj).exists():
+            reviewer = Reviewer(user=user, review=review_obj)
+            reviewer.save()

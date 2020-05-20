@@ -9,6 +9,7 @@ from django.test import TestCase
 import pytz
 from model_mommy import mommy
 
+from model_reviews.constants import SANDBOX_FIELD
 from model_reviews.models import ModelReview, Reviewer
 
 from .test_app.models import TestModel
@@ -26,15 +27,11 @@ class TestModels(TestCase):
 
         self.assertEqual(TestModel.PENDING, test_model.review_status)
         self.assertEqual(None, test_model.review_date)
-        self.assertEqual("", test_model.review_reason)
-        self.assertEqual("", test_model.review_comments)
 
         review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(None, review.review_date)
         self.assertEqual(None, review.user)
-        self.assertEqual("", review.review_reason)
-        self.assertEqual("", review.review_comments)
 
         # test with a model that has a user
         user = mommy.make("auth.User", username="Test1")
@@ -83,16 +80,12 @@ class TestModels(TestCase):
 
         review.review_status = ModelReview.APPROVED
         review.review_date = date
-        review.review_reason = "foo"
-        review.review_comments = "bar"
         review.save()
 
         test_model.refresh_from_db()
 
         self.assertEqual(TestModel.APPROVED, test_model.review_status)
         self.assertEqual(date, test_model.review_date)
-        self.assertEqual("foo", test_model.review_reason)
-        self.assertEqual("bar", test_model.review_comments)
 
         # assert that mock is called with the expected params
         review.refresh_from_db()
@@ -109,16 +102,12 @@ class TestModels(TestCase):
 
         review.review_status = ModelReview.REJECTED
         review.review_date = date
-        review.review_reason = "foofoo"
-        review.review_comments = "barbar"
         review.save()
 
         test_model.refresh_from_db()
 
         self.assertEqual(TestModel.REJECTED, test_model.review_status)
         self.assertEqual(date, test_model.review_date)
-        self.assertEqual("foofoo", test_model.review_reason)
-        self.assertEqual("barbar", test_model.review_comments)
 
         # assert that mock is called with the expected params
         review.refresh_from_db()
@@ -137,8 +126,6 @@ class TestModels(TestCase):
         review.refresh_from_db()
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(None, review.review_date)
-        self.assertEqual("", review.review_reason)
-        self.assertEqual("", review.review_comments)
 
         # when reviewed object is directly approved
         approve_date = datetime(
@@ -146,25 +133,21 @@ class TestModels(TestCase):
         )
         test_model.review_status = TestModel.APPROVED
         test_model.review_date = approve_date
-        test_model.review_reason = "<3"
-        test_model.review_comments = "I like"
         test_model.save()
 
         review.refresh_from_db()  # nothing changed on the review but sandbox updated
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(None, review.review_date)
-        self.assertEqual("", review.review_reason)
-        self.assertEqual("", review.review_comments)
-        self.assertEqual(ModelReview.APPROVED, review.sandbox["review_status"])
-        self.assertEqual("2017-06-05T00:00:00+02:27", review.sandbox["review_date"])
-        self.assertEqual("<3", review.sandbox["review_reason"])
-        self.assertEqual("I like", review.sandbox["review_comments"])
+        self.assertEqual(
+            ModelReview.APPROVED, review.data[SANDBOX_FIELD]["review_status"]
+        )
+        self.assertEqual(
+            "2017-06-05T00:00:00+02:27", review.data[SANDBOX_FIELD]["review_date"]
+        )
 
         test_model.refresh_from_db()  # nothing changed on the reviewed model
         self.assertEqual(ModelReview.PENDING, test_model.review_status)
         self.assertEqual(None, test_model.review_date)
-        self.assertEqual("", test_model.review_reason)
-        self.assertEqual("", test_model.review_comments)
         self.assertEqual("Used to be Test 3", test_model.name)
 
         # when reviewed object is directly rejected
@@ -173,25 +156,21 @@ class TestModels(TestCase):
         )
         test_model.review_status = TestModel.REJECTED
         test_model.review_date = reject_date
-        test_model.review_reason = ":("
-        test_model.review_comments = "No like"
         test_model.save()
 
         review.refresh_from_db()  # nothing changed on the review but sandbox updated
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(None, review.review_date)
-        self.assertEqual("", review.review_reason)
-        self.assertEqual("", review.review_comments)
-        self.assertEqual(ModelReview.REJECTED, review.sandbox["review_status"])
-        self.assertEqual("2017-06-06T00:00:00+02:27", review.sandbox["review_date"])
-        self.assertEqual(":(", review.sandbox["review_reason"])
-        self.assertEqual("No like", review.sandbox["review_comments"])
+        self.assertEqual(
+            ModelReview.REJECTED, review.data[SANDBOX_FIELD]["review_status"]
+        )
+        self.assertEqual(
+            "2017-06-06T00:00:00+02:27", review.data[SANDBOX_FIELD]["review_date"]
+        )
 
         test_model.refresh_from_db()  # nothing changed on the reviewed model
         self.assertEqual(ModelReview.PENDING, test_model.review_status)
         self.assertEqual(None, test_model.review_date)
-        self.assertEqual("", test_model.review_reason)
-        self.assertEqual("", test_model.review_comments)
         self.assertEqual("Used to be Test 3", test_model.name)
 
         # and no other review objects were created

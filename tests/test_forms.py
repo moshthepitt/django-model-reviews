@@ -43,8 +43,8 @@ class TestForms(TestCase):
         request.user = user1
 
         data = {
-            "review": review,
-            "reviewer": reviewer,
+            "review": review.pk,
+            "reviewer": reviewer.pk,
             "review_status": ModelReview.APPROVED,
         }
 

@@ -57,11 +57,13 @@ class TestForms(TestCase):
         test_model.refresh_from_db()
 
         self.assertEqual(ModelReview.APPROVED, review.review_status)
-
         self.assertEqual(ModelReview.APPROVED, test_model.review_status)
+        self.assertEqual(mocked_now, review.review_date)
+        self.assertEqual(mocked_now, test_model.review_date)
 
         self.assertEqual(True, reviewer.reviewed)
         self.assertEqual(mocked_now, reviewer.review_date)
+        self.assertEqual(ModelReview.APPROVED, reviewer.review_status)
 
     @patch("django.utils.timezone.now")
     def test_successful_performreview_multiple_reviewers(self, mock):
@@ -102,11 +104,13 @@ class TestForms(TestCase):
         test_model.refresh_from_db()
 
         self.assertEqual(ModelReview.APPROVED, review.review_status)
-
         self.assertEqual(ModelReview.APPROVED, test_model.review_status)
+        self.assertEqual(mocked_now, review.review_date)
+        self.assertEqual(mocked_now, test_model.review_date)
 
         self.assertEqual(True, reviewer.reviewed)
         self.assertEqual(mocked_now, reviewer.review_date)
+        self.assertEqual(ModelReview.APPROVED, reviewer.review_status)
 
     @patch("django.utils.timezone.now")
     def test_successful_performreview_multiple_reviewers_levels(self, mock):
@@ -155,6 +159,7 @@ class TestForms(TestCase):
 
         self.assertEqual(True, reviewer.reviewed)
         self.assertEqual(mocked_now, reviewer.review_date)
+        self.assertEqual(ModelReview.APPROVED, reviewer.review_status)
 
         request = self.factory.get("/")
         request.session = {}
@@ -176,6 +181,9 @@ class TestForms(TestCase):
 
         self.assertEqual(ModelReview.APPROVED, review.review_status)
         self.assertEqual(ModelReview.APPROVED, test_model.review_status)
+        self.assertEqual(mocked_now, review.review_date)
+        self.assertEqual(mocked_now, test_model.review_date)
 
         self.assertEqual(True, reviewer2.reviewed)
         self.assertEqual(mocked_now, reviewer2.review_date)
+        self.assertEqual(ModelReview.APPROVED, reviewer2.review_status)

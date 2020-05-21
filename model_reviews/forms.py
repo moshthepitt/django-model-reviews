@@ -51,6 +51,7 @@ class PerformReview(forms.Form):
             # save reviewer stuff
             reviewer.reviewed = True
             reviewer.review_date = now
+            reviewer.review_status = data["review_status"]
             reviewer.save()
             # perform the review
-            perform_review(review=review, data=data)
+            perform_review(review=review)

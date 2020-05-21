@@ -169,7 +169,7 @@ class ModelReview(BaseReview):
             self.save()
 
 
-class Reviewer(models.Model):
+class Reviewer(BaseReview):
     """Model definition for Reviewer."""
 
     user = models.ForeignKey(USER, verbose_name=_("User"), on_delete=models.CASCADE)
@@ -191,9 +191,6 @@ class Reviewer(models.Model):
     )
     reviewed = models.BooleanField(
         _("Reviewed"), default=False, blank=True, db_index=True
-    )
-    review_date = models.DateTimeField(
-        _("Review Date"), null=True, default=None, blank=True
     )
 
     class Meta:

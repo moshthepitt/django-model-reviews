@@ -16,8 +16,8 @@ from model_reviews.constants import SANDBOX_FIELD
 USER = settings.AUTH_USER_MODEL
 
 
-class AbstractReview(models.Model):
-    """Model definition for AbstractReview."""
+class BaseReview(models.Model):
+    """Model definition for BaseReview."""
 
     APPROVED = "1"
     REJECTED = "2"
@@ -28,14 +28,6 @@ class AbstractReview(models.Model):
         (PENDING, _("Pending")),
         (REJECTED, _("Rejected")),
     )
-
-    # model_review options
-    monitored_fields: List[str] = ["review_status", "review_date"]
-    side_effection_function: Optional[str] = None
-    set_reviewers_function: Optional[str] = None
-    set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
-
-    # model fields start here
 
     review_status = models.CharField(
         _("Review Status"),
@@ -48,6 +40,21 @@ class AbstractReview(models.Model):
     review_date = models.DateTimeField(
         _("Review Date"), blank=True, default=None, null=True
     )
+
+    class Meta:
+        """Meta definition for BaseReview."""
+
+        abstract = True
+
+
+class AbstractReview(BaseReview):
+    """Model definition for AbstractReview."""
+
+    # model_review options
+    monitored_fields: List[str] = ["review_status", "review_date"]
+    side_effection_function: Optional[str] = None
+    set_reviewers_function: Optional[str] = None
+    set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
 
     class Meta:
         """Meta definition for AbstractReview."""
@@ -82,7 +89,7 @@ class AbstractReview(models.Model):
             side_effect(review_obj=review_obj)
 
 
-class ModelReview(AbstractReview):
+class ModelReview(BaseReview):
     """Model definition for ModelReview."""
 
     user = models.ForeignKey(

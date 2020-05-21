@@ -1,4 +1,6 @@
 """utils module."""
+from django.db.models import Max
+
 from model_reviews.models import ModelReview, Reviewer
 
 
@@ -20,3 +22,13 @@ def perform_review(review: ModelReview, data: dict):
         # save review as done
         review.review_status = data["review_status"]
         review.save()
+    else:
+        # check if at least one of the highest level people has done the review
+        max_level = reviewers.aggregate(max_lvl=Max("level"))["max_lvl"]
+        highest_lvl = reviewers.filter(reviewed=True, level=max_level).order_by(
+            "-review_date", "-level"
+        )
+        if highest_lvl.exists():
+            # save review as done
+            review.review_status = data["review_status"]
+            review.save()

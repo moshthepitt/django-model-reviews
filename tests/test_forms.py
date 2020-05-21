@@ -160,18 +160,18 @@ class TestForms(TestCase):
         request.session = {}
         request.user = user3
 
-        data = {
+        data2 = {
             "review": review.pk,
             "reviewer": reviewer2.pk,
             "review_status": ModelReview.APPROVED,
         }
 
-        form = PerformReview(data=data)
+        form = PerformReview(data=data2)
         self.assertTrue(form.is_valid())
         form.save()
 
         review.refresh_from_db()
-        reviewer.refresh_from_db()
+        reviewer2.refresh_from_db()
         test_model.refresh_from_db()
 
         self.assertEqual(ModelReview.APPROVED, review.review_status)

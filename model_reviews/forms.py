@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.utils.translation import gettext as _
 
 from model_reviews.models import ModelReview, Reviewer
+from model_reviews.utils import perform_review
 
 
 class PerformReview(forms.Form):
@@ -51,6 +52,5 @@ class PerformReview(forms.Form):
             reviewer.reviewed = True
             reviewer.review_date = now
             reviewer.save()
-            # save review
-            review.review_status = data["review_status"]
-            review.save()
+            # perform the review
+            perform_review(review=review, data=data)

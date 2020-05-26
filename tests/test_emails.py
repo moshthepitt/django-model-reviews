@@ -40,13 +40,13 @@ class TestEmails(TestCase):
         review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
 
         mommy.make(
-            "model_review.Reviewer",
+            "model_reviews.Reviewer",
             user=mommy.make("auth.User", username="r1", email="r1@example.com"),
             review=review,
         )
 
         mommy.make(
-            "model_review.Reviewer",
+            "model_reviews.Reviewer",
             user=mommy.make(
                 "auth.User",
                 username="r2",

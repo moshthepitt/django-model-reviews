@@ -11,7 +11,13 @@ from django.db import models
 from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
-from model_reviews.constants import SANDBOX_FIELD
+from model_reviews.constants import (
+    REVIEW_COMPLETE_EMAIL_SUBJ,
+    REVIEW_COMPLETE_EMAIL_TXT,
+    REVIEW_REQUEST_EMAIL_SUBJ,
+    REVIEW_REQUEST_EMAIL_TXT,
+    SANDBOX_FIELD,
+)
 
 USER = settings.AUTH_USER_MODEL
 
@@ -59,6 +65,12 @@ class AbstractReview(BaseReview):
     set_reviewers_function: Optional[str] = None
     # path to function that will be used to determine the user for a review object
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
+
+    # emails options
+    review_request_email_subject = _(REVIEW_REQUEST_EMAIL_SUBJ)
+    review_request_email_body = _(REVIEW_REQUEST_EMAIL_TXT)
+    review_complete_email_subject = _(REVIEW_COMPLETE_EMAIL_SUBJ)
+    review_complete_email_body = _(REVIEW_COMPLETE_EMAIL_TXT)
 
     class Meta:
         """Meta definition for AbstractReview."""

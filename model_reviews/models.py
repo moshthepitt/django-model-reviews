@@ -12,6 +12,8 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
 from model_reviews.constants import (
+    EMAIL_TEMPLATE,
+    EMAIL_TEMPLATE_PATH,
     REVIEW_COMPLETE_EMAIL_SUBJ,
     REVIEW_COMPLETE_EMAIL_TXT,
     REVIEW_REQUEST_EMAIL_SUBJ,
@@ -71,6 +73,8 @@ class AbstractReview(BaseReview):
     review_request_email_body = _(REVIEW_REQUEST_EMAIL_TXT)
     review_complete_email_subject = _(REVIEW_COMPLETE_EMAIL_SUBJ)
     review_complete_email_body = _(REVIEW_COMPLETE_EMAIL_TXT)
+    email_template = EMAIL_TEMPLATE
+    email_template_path = EMAIL_TEMPLATE_PATH
 
     class Meta:
         """Meta definition for AbstractReview."""

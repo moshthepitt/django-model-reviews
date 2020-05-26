@@ -84,3 +84,20 @@ def send_request_for_review(review_obj: ModelReview):
                 template=source.email_template,
                 template_path=source.email_template_path,
             )
+
+
+def send_review_complete_notice(review_obj: ModelReview):
+    """Send notice that review is complete."""
+    source = review_obj.content_object
+    if review_obj.needs_review() and review_obj.user:
+        if review_obj.user.email:
+            send_email(
+                name=get_display_name(review_obj.user),
+                email=review_obj.user.email,
+                subject=source.review_complete_email_subject,
+                message=source.review_complete_email_body,
+                obj=review_obj,
+                cc_list=None,
+                template=source.email_template,
+                template_path=source.email_template_path,
+            )

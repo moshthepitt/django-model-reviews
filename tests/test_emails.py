@@ -1,22 +1,114 @@
 """Test emails."""
 from unittest.mock import call, patch
 
+from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.test import TestCase
 
-from model_reviews.emails import send_email
+from model_mommy import mommy
+
+from model_reviews.emails import get_display_name, send_email
+from model_reviews.models import ModelReview
 
 
 class TestEmails(TestCase):
     """Test class for emails."""
 
-    # def test_emails_asking_for_review(self):
-    #     """Test that emails are sent asking for review."""
-    #     self.fail()
+    def test_get_display_name(self):
+        """Test get_display_name."""
+        self.assertEqual(
+            "Mosh Pitt",
+            get_display_name(
+                mommy.make("auth.User", first_name="Mosh", last_name="Pitt")
+            ),
+        )
+        self.assertEqual(
+            "mosh", get_display_name(mommy.make("auth.User", first_name="mosh"))
+        )
+        self.assertEqual(
+            "Pitt", get_display_name(mommy.make("auth.User", last_name="Pitt"))
+        )
+        self.assertEqual(
+            "xiaou", get_display_name(mommy.make("auth.User", username="xiaou"))
+        )
 
-    # def test_emails_after_review(self):
-    #     """Test that emails are after review is complete."""
-    #     self.fail()
+    @patch("model_reviews.emails.send_email")
+    def test_emails_asking_for_review(self, mock):
+        """Test that emails are sent asking for review."""
+        test_model = mommy.make("test_app.TestModel")
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+
+        mommy.make(
+            "model_review.Reviewer",
+            user=mommy.make("auth.User", username="r1", email="r1@example.com"),
+            review=review,
+        )
+
+        mommy.make(
+            "model_review.Reviewer",
+            user=mommy.make(
+                "auth.User",
+                username="r2",
+                email="r2@example.com",
+                first_name="Jane",
+                last_name="Doe",
+            ),
+            review=review,
+        )
+
+        self.assertEqual(2, mock.call_count)
+
+        expected_calls = [
+            call(
+                "name",
+                "email",
+                "subject",
+                "message",
+                "obj",
+                "cc",
+                "template",
+                "template_path",
+            ),
+            call(
+                "name",
+                "email",
+                "subject",
+                "message",
+                "obj",
+                "cc",
+                "template",
+                "template_path",
+            ),
+        ]
+
+        mock.assert_has_calls(expected_calls)
+
+    @patch("model_reviews.emails.send_email")
+    def test_emails_after_review(self, mock):
+        """Test that emails are after review is complete."""
+        # test_model = mommy.make(
+        #     "test_app.TestModel",
+        #     user=mommy.make("auth.User", username="guy1", email="g1@example.com")
+        # )
+        # obj_type = ContentType.objects.get_for_model(test_model)
+        # review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+
+        self.assertEqual(1, mock.call_count)
+        expected_calls = [
+            call(
+                "name",
+                "email",
+                "subject",
+                "message",
+                "obj",
+                "cc",
+                "template",
+                "template_path",
+            )
+        ]
+
+        mock.assert_has_calls(expected_calls)
 
     def test_send_email(self):
         """

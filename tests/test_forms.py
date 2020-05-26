@@ -156,6 +156,8 @@ class TestForms(TestCase):
 
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(ModelReview.PENDING, test_model.review_status)
+        self.assertEqual(None, review.review_date)
+        self.assertEqual(None, test_model.review_date)
 
         self.assertEqual(True, reviewer.reviewed)
         self.assertEqual(mocked_now, reviewer.review_date)

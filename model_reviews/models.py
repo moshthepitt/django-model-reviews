@@ -51,9 +51,13 @@ class AbstractReview(BaseReview):
     """Model definition for AbstractReview."""
 
     # model_review options
+    # List of fields that need moderation/review
     monitored_fields: List[str] = ["review_status", "review_date"]
+    # path to function that will be run after successful review
     side_effection_function: Optional[str] = None
+    # path to function that will be used to determine reviewers
     set_reviewers_function: Optional[str] = None
+    # path to function that will be used to determine the user for a review object
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
 
     class Meta:

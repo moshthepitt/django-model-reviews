@@ -1,8 +1,19 @@
 """Emails module for model_review."""
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
+
+# from model_reviews.models import ModelReview
+
+
+def get_display_name(user: User):
+    """Get display name from user object."""
+    if any((user.first_name, user.last_name)):
+        return user.get_full_name()
+
+    return user.username
 
 
 def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-continuation
@@ -54,3 +65,8 @@ def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-contin
     msg.attach_alternative(html_content, "text/html")
 
     return msg.send(fail_silently=True)
+
+
+# def send_request_for_review(review_obj: ModelReview):
+#     """Send email requesting a review."""
+#     return True

@@ -5,7 +5,8 @@ from django.contrib.sites.models import Site
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
-# from model_reviews.models import ModelReview
+from model_reviews.constants import EMAIL_TEMPLATE, EMAIL_TEMPLATE_PATH
+from model_reviews.models import ModelReview, Reviewer
 
 
 def get_display_name(user: User):
@@ -23,8 +24,8 @@ def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-contin
     message: str,
     obj: object = None,
     cc_list: list = None,
-    template: str = "generic",
-    template_path: str = "model_reviews/email",
+    template: str = EMAIL_TEMPLATE,
+    template_path: str = EMAIL_TEMPLATE_PATH,
 ):
     """
     Sends a generic email
@@ -67,6 +68,19 @@ def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-contin
     return msg.send(fail_silently=True)
 
 
-# def send_request_for_review(review_obj: ModelReview):
-#     """Send email requesting a review."""
-#     return True
+def send_request_for_review(review_obj: ModelReview):
+    """Send email requesting a review."""
+    reviewers = Reviewer.objects.filter(review=review_obj, reviewed=False)
+    source = review_obj.content_object
+    for reviewer in reviewers:
+        if reviewer.user.email:
+            send_email(
+                name=get_display_name(reviewer.user),
+                email=reviewer.user.email,
+                subject=source.review_request_email_subject,
+                message=source.review_request_email_body,
+                obj=review_obj,
+                cc_list=None,
+                template=source.email_template,
+                template_path=source.email_template_path,
+            )

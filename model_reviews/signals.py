@@ -74,6 +74,7 @@ def modelreview_after_save(  # pylint: disable=bad-continuation
     """Perform actions after the ModelReview object has been saved."""
     if not instance.needs_review():
         process_review(instance)
+        instance.send_review_complete_notification()
     if instance.content_object:
         if instance.content_object.set_reviewers_function:
             set_reviewers_function = import_string(

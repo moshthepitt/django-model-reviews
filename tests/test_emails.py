@@ -4,6 +4,7 @@ from unittest.mock import call, patch
 from django.contrib.contenttypes.models import ContentType
 from django.core import mail
 from django.test import TestCase
+from django.utils import timezone
 
 from model_mommy import mommy
 
@@ -87,24 +88,27 @@ class TestEmails(TestCase):
     @patch("model_reviews.emails.send_email")
     def test_emails_after_review(self, mock):
         """Test that emails are after review is complete."""
-        # test_model = mommy.make(
-        #     "test_app.TestModel",
-        #     user=mommy.make("auth.User", username="guy1", email="g1@example.com")
-        # )
-        # obj_type = ContentType.objects.get_for_model(test_model)
-        # review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        test_model = mommy.make(
+            "test_app.TestModel2",
+            user=mommy.make("auth.User", username="guy1", email="g1@example.com"),
+        )
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        review.review_status = ModelReview.APPROVED
+        review.review_date = timezone.now()
+        review.save()
 
         self.assertEqual(1, mock.call_count)
         expected_calls = [
             call(
-                "name",
-                "email",
-                "subject",
-                "message",
-                "obj",
-                "cc",
-                "template",
-                "template_path",
+                name="guy1",
+                email="g1@example.com",
+                subject="Your request has been processed",
+                message="Your request has been processed, please log in to view the status.",  # noqa  pylint: disable=line-too-long
+                obj=review,
+                cc_list=None,
+                template="generic",
+                template_path="model_reviews/email",
             )
         ]
 

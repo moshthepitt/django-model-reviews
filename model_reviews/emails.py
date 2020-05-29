@@ -93,9 +93,9 @@ def send_single_request_for_review(reviewer: Reviewer):
 
 def send_review_complete_notice(review_obj: ModelReview):
     """Send notice that review is complete."""
-    source = review_obj.content_object
-    if review_obj.needs_review() and review_obj.user:
+    if not review_obj.needs_review() and review_obj.user:
         if review_obj.user.email:
+            source = review_obj.content_object
             send_email(
                 name=get_display_name(review_obj.user),
                 email=review_obj.user.email,

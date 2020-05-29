@@ -71,19 +71,24 @@ def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-contin
 def send_request_for_review(review_obj: ModelReview):
     """Send email requesting a review."""
     reviewers = Reviewer.objects.filter(review=review_obj, reviewed=False)
-    source = review_obj.content_object
     for reviewer in reviewers:
-        if reviewer.user.email:
-            send_email(
-                name=get_display_name(reviewer.user),
-                email=reviewer.user.email,
-                subject=source.review_request_email_subject,
-                message=source.review_request_email_body,
-                obj=review_obj,
-                cc_list=None,
-                template=source.email_template,
-                template_path=source.email_template_path,
-            )
+        send_single_request_for_review(reviewer)
+
+
+def send_single_request_for_review(reviewer: Reviewer):
+    """Send email requesting a review to one reviewer."""
+    if reviewer.user.email:
+        source = reviewer.review.content_object
+        send_email(
+            name=get_display_name(reviewer.user),
+            email=reviewer.user.email,
+            subject=source.review_request_email_subject,
+            message=source.review_request_email_body,
+            obj=reviewer.review,
+            cc_list=None,
+            template=source.email_template,
+            template_path=source.email_template_path,
+        )
 
 
 def send_review_complete_notice(review_obj: ModelReview):

@@ -4,7 +4,7 @@ from django.db.models.signals import post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django.utils.module_loading import import_string
 
-from model_reviews.models import AbstractReview, ModelReview
+from model_reviews.models import AbstractReview, ModelReview, Reviewer
 from model_reviews.utils import process_review
 
 
@@ -80,3 +80,12 @@ def modelreview_after_save(  # pylint: disable=bad-continuation
                 instance.content_object.set_reviewers_function
             )
             set_reviewers_function(review_obj=instance)
+
+
+@receiver(post_save, sender=Reviewer)
+def reviewer_after_save(  # pylint: disable=bad-continuation
+    sender, instance, raw, created, **kwargs
+):  # pylint: disable=unused-argument
+    """Perform actions after the Reviewer object has been saved."""
+    if created:
+        instance.send_request_for_review()

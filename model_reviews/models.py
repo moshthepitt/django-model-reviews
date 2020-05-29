@@ -67,6 +67,10 @@ class AbstractReview(BaseReview):
     set_reviewers_function: Optional[str] = None
     # path to function that will be used to determine the user for a review object
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
+    # path to function that will be used to determine the user for a review object
+    request_for_review_function: Optional[
+        str
+    ] = "model_reviews.emails.send_single_request_for_review"
 
     # emails options
     review_request_email_subject = _(REVIEW_REQUEST_EMAIL_SUBJ)
@@ -222,3 +226,10 @@ class Reviewer(BaseReview):
     def __str__(self):
         """Unicode representation of Reviewer."""
         return f"{self.user} review for {self.review}"
+
+    def send_request_for_review(self):
+        """Send a notification for request to perform review."""
+        notify_func = import_string(
+            self.review.content_object.request_for_review_function
+        )
+        notify_func(self)

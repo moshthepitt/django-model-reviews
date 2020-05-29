@@ -67,10 +67,14 @@ class AbstractReview(BaseReview):
     set_reviewers_function: Optional[str] = None
     # path to function that will be used to determine the user for a review object
     set_user_function: Optional[str] = "model_reviews.side_effects.set_review_user"
-    # path to function that will be used to determine the user for a review object
+    # path to function that will be used to send email to reviewers
     request_for_review_function: Optional[
         str
     ] = "model_reviews.emails.send_single_request_for_review"
+    # path to function that will be used to send email to user after review
+    review_complete_notify_function: Optional[
+        str
+    ] = "model_reviews.emails.send_review_complete_notice"
 
     # emails options
     review_request_email_subject = _(REVIEW_REQUEST_EMAIL_SUBJ)
@@ -191,6 +195,14 @@ class ModelReview(BaseReview):
             self.data[SANDBOX_FIELD] = values
         if do_save:
             self.save()
+
+    def send_review_complete_notification(self):
+        """Send notification that review is complete."""
+        if self.user and not self.needs_review():
+            source = self.content_object
+            if source.review_complete_notify_function:
+                notify_func = import_string(source.review_complete_notify_function)
+                notify_func(review_obj=self)
 
 
 class Reviewer(BaseReview):

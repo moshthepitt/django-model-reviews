@@ -1,6 +1,7 @@
 """forms module for model_reviews."""
 from django import forms
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext as _
@@ -12,12 +13,8 @@ from model_reviews.utils import perform_review
 class PerformReview(forms.Form):
     """PerformReview Form definition."""
 
-    review = forms.ModelChoiceField(
-        queryset=ModelReview.objects.all(), widget=forms.HiddenInput, required=True
-    )
-    reviewer = forms.ModelChoiceField(
-        queryset=Reviewer.objects.all(), widget=forms.HiddenInput, required=True
-    )
+    review = forms.ModelChoiceField(queryset=ModelReview.objects.all())
+    reviewer = forms.ModelChoiceField(queryset=Reviewer.objects.all())
     review_status = forms.ChoiceField(
         label=_(settings.MODELREVIEW_FORM_STATUS_FIELD_LABEL),
         choices=ModelReview.STATUS_CHOICES,
@@ -55,3 +52,29 @@ class PerformReview(forms.Form):
             reviewer.save()
             # perform the review
             perform_review(review=review)
+
+
+def get_review_form(review: ModelReview, user: User):
+    """Get review form for a particular review object."""
+
+    review_qs = ModelReview.objects.filter(id=review.id)
+    reviewer_qs = Reviewer.objects.filter(review=review, user=user)
+
+    return type(
+        "PerformReviewForm",
+        (PerformReview,),
+        {
+            "review": forms.ModelChoiceField(
+                initial=review_qs.first().pk,
+                queryset=review_qs,
+                widget=forms.HiddenInput,
+                required=True,
+            ),
+            "reviewer": forms.ModelChoiceField(
+                queryset=reviewer_qs,
+                initial=reviewer_qs.first().pk,
+                widget=forms.HiddenInput,
+                required=True,
+            ),
+        },
+    )

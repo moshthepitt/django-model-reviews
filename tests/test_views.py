@@ -73,9 +73,9 @@ class TestViews(TestCase):
             content_type=obj_type, object_id=test_model2.id
         )
 
-        # reviewer = mommy.make(
-        #     "model_reviews.Reviewer", user=self.reviewer, review=review
-        # )
+        reviewer = mommy.make(
+            "model_reviews.Reviewer", user=self.reviewer, review=review
+        )
         reviewer2 = mommy.make(
             "model_reviews.Reviewer", user=self.reviewer2, review=review2
         )
@@ -92,6 +92,24 @@ class TestViews(TestCase):
         self.assertEqual(
             {
                 "reviewer": [
+                    "Select a valid choice. That choice is not one of the available choices."  # noqa  # pylint: disable=line-too-long
+                ]
+            },
+            res.context["form"].errors,
+        )
+
+        # can't be review the wrong review obj
+        data = {
+            "review": review2.pk,
+            "reviewer": reviewer.pk,
+            "review_status": ModelReview.APPROVED,
+        }
+        res = self.client.post(f"/review/{review.pk}", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
+        self.assertEqual(
+            {
+                "review": [
                     "Select a valid choice. That choice is not one of the available choices."  # noqa  # pylint: disable=line-too-long
                 ]
             },

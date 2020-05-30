@@ -11,6 +11,7 @@ class ReviewFormMixin:  # pylint: disable=too-few-public-methods
     """Mixin that implements a method to get review form."""
 
     model = ModelReview
+    template_name = "model_reviews/modelreview_detail.html"
 
     def get_form_class(self):
         """Return the form class to use."""

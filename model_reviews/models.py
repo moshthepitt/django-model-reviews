@@ -241,7 +241,9 @@ class Reviewer(BaseReview):
 
     def send_request_for_review(self):
         """Send a notification for request to perform review."""
-        notify_func = import_string(
-            self.review.content_object.request_for_review_function
-        )
-        notify_func(self)
+        if self.review.content_object:
+            if self.review.content_object.request_for_review_function:
+                notify_func = import_string(
+                    self.review.content_object.request_for_review_function
+                )
+                notify_func(self)

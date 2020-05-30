@@ -58,7 +58,12 @@ def get_review_form(review: ModelReview, user: User):
     """Get review form for a particular review object."""
 
     review_qs = ModelReview.objects.filter(id=review.id)
-    reviewer_qs = Reviewer.objects.filter(review=review, user=user)
+    reviewer_qs = Reviewer.objects.filter(review=review)
+    if user.is_anonymous:
+        initial_reviewer = None
+    else:
+        reviewer_qs = reviewer_qs.filter(user=user)
+        initial_reviewer = reviewer_qs.first().pk
 
     return type(
         "PerformReviewForm",
@@ -72,7 +77,7 @@ def get_review_form(review: ModelReview, user: User):
             ),
             "reviewer": forms.ModelChoiceField(
                 queryset=reviewer_qs,
-                initial=reviewer_qs.first().pk,
+                initial=initial_reviewer,
                 widget=forms.HiddenInput,
                 required=True,
             ),

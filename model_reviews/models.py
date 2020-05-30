@@ -84,6 +84,9 @@ class AbstractReview(BaseReview):
     email_template = EMAIL_TEMPLATE
     email_template_path = EMAIL_TEMPLATE_PATH
 
+    # model fields
+    review_reason = models.TextField(_("Review Reason"), blank=True, default="")
+
     class Meta:
         """Meta definition for AbstractReview."""
 

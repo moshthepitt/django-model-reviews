@@ -1,8 +1,12 @@
 """Views module for model reviews."""
+from django.utils.translation import gettext_lazy as _
 from django.views import View
 from django.views.generic import DetailView, FormView
 from django.views.generic.detail import SingleObjectMixin
 
+from braces.views import FormInvalidMessageMixin, FormValidMessageMixin
+
+from model_reviews.constants import REVIEW_FORM_FAIL_MSG, REVIEW_FORM_SUCCESS_MSG
 from model_reviews.forms import get_review_form
 from model_reviews.models import ModelReview
 
@@ -29,8 +33,17 @@ class ReviewDisplay(ReviewFormMixin, DetailView):
         return context
 
 
-class ReviewForm(ReviewFormMixin, SingleObjectMixin, FormView):
+class ReviewForm(  # pylint: disable=bad-continuation
+    FormInvalidMessageMixin,
+    FormValidMessageMixin,
+    ReviewFormMixin,
+    SingleObjectMixin,
+    FormView,
+):
     """FormView for a review."""
+
+    form_invalid_message = _(REVIEW_FORM_FAIL_MSG)
+    form_valid_message = _(REVIEW_FORM_SUCCESS_MSG)
 
     def get_success_url(self):
         """Get the success url."""

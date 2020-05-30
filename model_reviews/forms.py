@@ -56,7 +56,6 @@ class PerformReview(forms.Form):
 
 def get_review_form(review: ModelReview, user: User):
     """Get review form for a particular review object."""
-
     review_qs = ModelReview.objects.filter(id=review.id)
     reviewer_qs = Reviewer.objects.filter(review=review)
     if user.is_anonymous:

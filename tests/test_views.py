@@ -4,6 +4,7 @@ from django.test import TestCase, override_settings
 
 from model_mommy import mommy
 
+from model_reviews import constants
 from model_reviews.forms import PerformReview
 from model_reviews.models import ModelReview
 from model_reviews.views import ReviewDisplay
@@ -56,6 +57,6 @@ class TestViews(TestCase):
         test_model.refresh_from_db()
         self.assertEqual(ModelReview.APPROVED, test_model.review_status)
         self.assertFalse(test_model.review_date is None)
-        # self.assertIsInstance(res.context["view"], ReviewDisplay)
-        # self.assertIsInstance(res.context["form"], PerformReview)
-        # self.assertTemplateUsed(res, "model_reviews/modelreview_detail.html")
+        self.assertTrue(
+            constants.REVIEW_FORM_SUCCESS_MSG in res.cookies["messages"].value
+        )

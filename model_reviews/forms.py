@@ -6,6 +6,10 @@ from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
+from model_reviews.constants import (
+    REVIEW_FORM_WRONG_REVIEW_MSG,
+    REVIEW_FORM_WRONG_REVIEWER_MSG,
+)
 from model_reviews.models import ModelReview, Reviewer
 from model_reviews.utils import perform_review
 
@@ -73,12 +77,14 @@ def get_review_form(review: ModelReview, user: User):
                 queryset=review_qs,
                 widget=forms.HiddenInput,
                 required=True,
+                error_messages={"invalid_choice": REVIEW_FORM_WRONG_REVIEW_MSG},
             ),
             "reviewer": forms.ModelChoiceField(
                 queryset=reviewer_qs,
                 initial=initial_reviewer,
                 widget=forms.HiddenInput,
                 required=True,
+                error_messages={"invalid_choice": REVIEW_FORM_WRONG_REVIEWER_MSG},
             ),
         },
     )

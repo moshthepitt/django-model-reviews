@@ -90,11 +90,7 @@ class TestViews(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
         self.assertEqual(
-            {
-                "reviewer": [
-                    "Select a valid choice. That choice is not one of the available choices."  # noqa  # pylint: disable=line-too-long
-                ]
-            },
+            {"reviewer": [constants.REVIEW_FORM_WRONG_REVIEWER_MSG]},
             res.context["form"].errors,
         )
 
@@ -108,10 +104,6 @@ class TestViews(TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
         self.assertEqual(
-            {
-                "review": [
-                    "Select a valid choice. That choice is not one of the available choices."  # noqa  # pylint: disable=line-too-long
-                ]
-            },
+            {"review": [constants.REVIEW_FORM_WRONG_REVIEW_MSG]},
             res.context["form"].errors,
         )

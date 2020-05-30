@@ -21,6 +21,7 @@ class TestViews(TestCase):
         super().setUp()
         self.user = mommy.make("auth.User", username="mosh")
         self.reviewer = mommy.make("auth.User", username="neemo")
+        self.reviewer2 = mommy.make("auth.User", username="bandit")
 
     def test_review_display(self):
         """Test that a review's details are displayed ok."""
@@ -59,4 +60,40 @@ class TestViews(TestCase):
         self.assertFalse(test_model.review_date is None)
         self.assertTrue(
             constants.REVIEW_FORM_SUCCESS_MSG in res.cookies["messages"].value
+        )
+
+    def test_review_form_errors(self):
+        """Test that the review form errors are handled correctly."""
+        test_model = mommy.make("test_app.TestModel", name="Test 1")
+        test_model2 = mommy.make("test_app.TestModel", name="Test 2")
+        obj_type = ContentType.objects.get_for_model(test_model)
+
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        review2 = ModelReview.objects.get(
+            content_type=obj_type, object_id=test_model2.id
+        )
+
+        # reviewer = mommy.make(
+        #     "model_reviews.Reviewer", user=self.reviewer, review=review
+        # )
+        reviewer2 = mommy.make(
+            "model_reviews.Reviewer", user=self.reviewer2, review=review2
+        )
+
+        # can't be reviewed by a non reviewer
+        data = {
+            "review": review.pk,
+            "reviewer": reviewer2.pk,
+            "review_status": ModelReview.APPROVED,
+        }
+        res = self.client.post(f"/review/{review.pk}", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
+        self.assertEqual(
+            {
+                "reviewer": [
+                    "Select a valid choice. That choice is not one of the available choices."  # noqa  # pylint: disable=line-too-long
+                ]
+            },
+            res.context["form"].errors,
         )

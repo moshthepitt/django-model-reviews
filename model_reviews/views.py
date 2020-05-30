@@ -50,7 +50,7 @@ class ReviewForm(  # pylint: disable=bad-continuation
         return "/"
 
     def form_valid(self, form):
-        """If the form is valid, save the associated model."""
+        """If the form is valid, save the review."""
         form.save()
         return super().form_valid(form)
 

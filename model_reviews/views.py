@@ -45,6 +45,13 @@ class ReviewForm(  # pylint: disable=bad-continuation
     form_invalid_message = _(REVIEW_FORM_FAIL_MSG)
     form_valid_message = _(REVIEW_FORM_SUCCESS_MSG)
 
+    def post(self, request, *args, **kwargs):
+        """Set self.object."""
+        self.object = (  # pylint: disable=attribute-defined-outside-init
+            self.get_object()
+        )
+        return super().post(request, *args, **kwargs)
+
     def get_success_url(self):
         """Get the success url."""
         return "/"

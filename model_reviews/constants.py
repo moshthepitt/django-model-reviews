@@ -9,3 +9,5 @@ REVIEW_COMPLETE_EMAIL_TXT = (
 REVIEW_COMPLETE_EMAIL_SUBJ = "Your request has been processed"
 EMAIL_TEMPLATE = "generic"
 EMAIL_TEMPLATE_PATH = "model_reviews/email"
+REVIEW_FORM_SUCCESS_MSG = "Saved successfully. :)"
+REVIEW_FORM_FAIL_MSG = "Please correct the errors on the form."

@@ -36,10 +36,15 @@ class ReviewForm(ReviewFormMixin, SingleObjectMixin, FormView):
         """Get the success url."""
         return "/"
 
+    def form_valid(self, form):
+        """If the form is valid, save the associated model."""
+        form.save()
+        return super().form_valid(form)
+
 
 class ReviewView(View):
     """
-    View used to display details of a ModelReview object
+    View used to display details of a ModelReview object.
 
     This view shows both the model review object details as well as handles the
     form to perform a review.

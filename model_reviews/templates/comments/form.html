@@ -1,0 +1,26 @@
+{% load comments i18n %}
+<div class="grid">
+    <div class="column commentarea">
+        <form action="{% comment_form_target %}" method="post">
+            {% csrf_token %}
+            {% if next %}
+                <div><input type="hidden" name="next" value="{{ next }}"/></div>
+            {% endif %}
+            {% for field in form %}
+                {% if field.is_hidden %}
+                <div>{{ field }}</div>
+                {% else %}
+                {% if field.errors %}{{ field.errors }}{% endif %}
+                <div
+                        {% if field.errors %} class="error"{% endif %}
+                        {% if field.name == "honeypot" %} style="display:none;"{% endif %}>
+                    {{ field.label_tag }} {{ field }}
+                </div>
+                {% endif %}
+            {% endfor %}
+            <div>
+                <button type="submit" class="btn-comment">{% trans "Submit Comment" %}</button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -77,14 +77,20 @@ def get_review_form(review: ModelReview, user: User):
                 queryset=review_qs,
                 widget=forms.HiddenInput,
                 required=True,
-                error_messages={"invalid_choice": REVIEW_FORM_WRONG_REVIEW_MSG},
+                error_messages={
+                    "invalid_choice": REVIEW_FORM_WRONG_REVIEW_MSG,
+                    "required": REVIEW_FORM_WRONG_REVIEW_MSG,
+                },
             ),
             "reviewer": forms.ModelChoiceField(
                 queryset=reviewer_qs,
                 initial=initial_reviewer,
                 widget=forms.HiddenInput,
                 required=True,
-                error_messages={"invalid_choice": REVIEW_FORM_WRONG_REVIEWER_MSG},
+                error_messages={
+                    "invalid_choice": REVIEW_FORM_WRONG_REVIEWER_MSG,
+                    "required": REVIEW_FORM_WRONG_REVIEWER_MSG,
+                },
             ),
         },
     )

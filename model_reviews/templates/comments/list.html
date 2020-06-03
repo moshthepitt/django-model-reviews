@@ -1,3 +1,4 @@
+{% if comment_list %}
 <div class="grid">
     <div class="column comments-list">
         {% for comment in comment_list %}
@@ -12,3 +13,5 @@
         {% endfor %}
     </div>
 </div>
+<hr />
+{% endif %}

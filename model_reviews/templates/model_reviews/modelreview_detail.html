@@ -1,4 +1,5 @@
 {% load i18n %}
+<!-- uncomment to use django.contrib.comments -->
 {# {% load comments %} #}
 <!doctype html>
 <html lang="en">
@@ -242,10 +243,9 @@
             </div>
         </div>
         <!-- COMMENTS SECTION -->
+        <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->
-        <!-- Render comments section using django.contrib.comments -->
         {# {% render_comment_list for object %} #}
-        <!-- <hr /> -->
         {# {% render_comment_form for object %} #}
         <!-- End of comments -->
         <!-- END COMMENTS SECTION -->

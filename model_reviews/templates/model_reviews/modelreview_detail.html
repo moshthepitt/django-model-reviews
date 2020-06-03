@@ -1,4 +1,5 @@
 {% load i18n %}
+{# {% load comments %} #}
 <!doctype html>
 <html lang="en">
 
@@ -183,7 +184,7 @@
                 </ul>
             </div>
             <div class="column">
-                <form>
+                <form method="POST" action="">
                     {% csrf_token %}
 
                     {% if form.non_field_errors %}
@@ -240,12 +241,14 @@
                 </form>
             </div>
         </div>
-        <hr />
+        <!-- COMMENTS SECTION -->
+        <!-- <hr /> -->
         <!-- Render comments section using django.contrib.comments -->
-        {% if render_comment_list %} {% render_comment_list for object %} {% endif %}
-        <hr />
-        {% if render_comment_form %} {% render_comment_form for object %} {% endif %}
+        {# {% render_comment_list for object %} #}
+        <!-- <hr /> -->
+        {# {% render_comment_form for object %} #}
         <!-- End of comments -->
+        <!-- END COMMENTS SECTION -->
     </div>
 </body>
 

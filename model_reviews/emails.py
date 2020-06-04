@@ -28,7 +28,7 @@ def send_email(  # pylint: disable=too-many-arguments,too-many-locals,bad-contin
     template_path: str = EMAIL_TEMPLATE_PATH,
 ):
     """
-    Sends a generic email
+    Send a generic email.
 
     :param name: name of person
     :param email: email address to send to

@@ -106,6 +106,24 @@
             margin: 1rem 0;
         }
 
+        .review_reason {
+            background-color: aliceblue;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 5%;
+        }
+
+        .review_reason::after {
+            content: "";
+            position: absolute;
+            top: -1.2rem;
+            left: 2rem;
+            border: 1rem solid transparent;
+            border-bottom-color: aliceblue;
+            display: block;
+            width: 0;
+        }
+
         .comment-item {
             background-color: #fbfbff;
             margin-bottom: 0.6rem;
@@ -210,11 +228,11 @@
                     {% if object.review_status == object.PENDING %}
                         <section id="id_review_status">
                             <div>
-                                <input type="radio" id="review-approve" name="review_status" value="1" required>
+                                <input type="radio" id="review-approve" name="review_status" value="1">
                                 <label for="review-approve">{% trans "Approve" %}</label>
                             </div>
                             <div>
-                                <input type="radio" id="review-reject" name="review_status" value="2" required>
+                                <input type="radio" id="review-reject" name="review_status" value="2">
                                 <label for="review-reject">{% trans "Reject" %}</label>
                             </div>
                         </section>
@@ -242,6 +260,13 @@
                 </form>
             </div>
         </div>
+        {% if object.content_object.review_reason %}
+        <div class="grid" style="position:relative;">
+            <div class="column review_reason">
+                {{ object.content_object.review_reason|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
         <!-- COMMENTS SECTION -->
         <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->

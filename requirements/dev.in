@@ -19,3 +19,4 @@ model_mommy
 black
 pre-commit
 mypy
+snapshottest

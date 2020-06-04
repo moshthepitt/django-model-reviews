@@ -13,4 +13,4 @@ REVIEW_FORM_SUCCESS_MSG = "Saved successfully. :)"
 REVIEW_FORM_FAIL_MSG = "Please correct the errors on the form."
 REVIEW_FORM_WRONG_REVIEW_MSG = "Please ensure that you are reviewing the correct item."
 REVIEW_FORM_WRONG_REVIEWER_MSG = REVIEW_FORM_WRONG_REVIEW_MSG
-REVIEW_FORM_WRONG_STATUS_MSG = "Please select either Approve or Reject."
+REVIEW_FORM_WRONG_STATUS_MSG = "Please submit an approval or rejection."

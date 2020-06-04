@@ -80,6 +80,33 @@ class TestViews(TestCase):
             "model_reviews.Reviewer", user=self.reviewer2, review=review2
         )
 
+        # can't not leave a review
+        data = {
+            "review": review.pk,
+            "reviewer": reviewer.pk,
+            "review_status": ModelReview.PENDING,
+        }
+        res = self.client.post(f"/review/{review.pk}", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
+        self.assertEqual(
+            {"review_status": [constants.REVIEW_FORM_WRONG_STATUS_MSG]},
+            res.context["form"].errors,
+        )
+
+        data = {
+            "review": review.pk,
+            "reviewer": reviewer.pk,
+            "review_status": "Oo",  # not valid
+        }
+        res = self.client.post(f"/review/{review.pk}", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(constants.REVIEW_FORM_FAIL_MSG in res.cookies["messages"].value)
+        self.assertEqual(
+            {"review_status": [constants.REVIEW_FORM_WRONG_STATUS_MSG]},
+            res.context["form"].errors,
+        )
+
         # can't be reviewed by a non reviewer
         data = {
             "review": review.pk,

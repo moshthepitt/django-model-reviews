@@ -6,7 +6,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>{% trans "Review Title" %}</title>
+    <title>{% trans "Submit Review" %}</title>
     <meta name="description" content="Review Description">
     <meta name="author" content="Kelvin Jayanoris">
     <style>
@@ -191,16 +191,14 @@
 
 <body>
     <div class="content-box">
-        <h1 style="text-align: center;">{% trans "Review Title" %}</h1>
+        <h1 style="text-align: center;">{% trans "Submit Review" %}</h1>
         <div class="grid">
             <div class="column">
-                <p>Lorem Ipsum is simply dummy text of the printing and typesetting
-                    industry. Lorem Ipsum has been the industry's standard
-                    dummy text ever since the 1500s</p>
-                <ul>
-                    <li>Lorem Ipsum has been the industry's standard</li>
-                    <li>Lorem Ipsum has been the industry's standard</li>
-                </ul>
+                <p>Please submit a review for this item</p>
+                <!--
+                    This section is meant to output details on the item being
+                    reviewed so that a review can make an informed decision.
+                -->
             </div>
             <div class="column">
                 <form method="POST" action="">

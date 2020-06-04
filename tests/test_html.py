@@ -31,3 +31,21 @@ class TestHTML(TestCase):
 
         res = self.client.get(f"/review/{review.pk}")
         self.assertMatchSnapshot(res.content.decode("utf-8"))
+
+    @patch("django.middleware.csrf.get_token")
+    def test_form_errors(self, csrf_mock):
+        """Test how errors are rendered."""
+        csrf_mock.return_value = "CSRF-I_LOVE-OOV"
+
+        test_model = mommy.make("test_app.TestModel", name="Test 1",)
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+
+        data = {
+            "review": 1337,
+            "reviewer": 1337,
+            "review_status": 1337,
+        }
+        res = self.client.post(f"/review/{review.pk}", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertMatchSnapshot(res.content.decode("utf-8"))

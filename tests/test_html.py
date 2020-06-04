@@ -49,3 +49,31 @@ class TestHTML(TestCase):
         res = self.client.post(f"/review/{review.pk}", data)
         self.assertEqual(res.status_code, 200)
         self.assertMatchSnapshot(res.content.decode("utf-8"))
+
+    @patch("django.middleware.csrf.get_token")
+    def test_review_approved(self, csrf_mock):
+        """Test rendering after review is approved."""
+        csrf_mock.return_value = "CSRF-I_LOVE-OOV"
+
+        test_model = mommy.make("test_app.TestModel2", name="Test 2",)
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        review.review_status = ModelReview.APPROVED
+        review.save()
+
+        res = self.client.get(f"/review/{review.pk}")
+        self.assertMatchSnapshot(res.content.decode("utf-8"))
+
+    @patch("django.middleware.csrf.get_token")
+    def test_review_rejected(self, csrf_mock):
+        """Test rendering after review is rejected."""
+        csrf_mock.return_value = "CSRF-I_LOVE-OOV"
+
+        test_model = mommy.make("test_app.TestModel2", name="Test 2",)
+        obj_type = ContentType.objects.get_for_model(test_model)
+        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        review.review_status = ModelReview.REJECTED
+        review.save()
+
+        res = self.client.get(f"/review/{review.pk}")
+        self.assertMatchSnapshot(res.content.decode("utf-8"))

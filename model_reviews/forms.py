@@ -9,6 +9,7 @@ from django.utils.translation import gettext as _
 from model_reviews.constants import (
     REVIEW_FORM_WRONG_REVIEW_MSG,
     REVIEW_FORM_WRONG_REVIEWER_MSG,
+    REVIEW_FORM_WRONG_STATUS_MSG,
 )
 from model_reviews.models import ModelReview, Reviewer
 from model_reviews.utils import perform_review
@@ -23,6 +24,10 @@ class PerformReview(forms.Form):
         label=_(settings.MODELREVIEW_FORM_STATUS_FIELD_LABEL),
         choices=ModelReview.STATUS_CHOICES,
         required=True,
+        error_messages={
+            "invalid_choice": REVIEW_FORM_WRONG_STATUS_MSG,
+            "required": REVIEW_FORM_WRONG_STATUS_MSG,
+        },
     )
 
     def __init__(self, *args, **kwargs):
@@ -62,11 +67,12 @@ def get_review_form(review: ModelReview, user: User):
     """Get review form for a particular review object."""
     review_qs = ModelReview.objects.filter(id=review.id)
     reviewer_qs = Reviewer.objects.filter(review=review)
-    if user.is_anonymous:
-        initial_reviewer = None
-    else:
+    initial_reviewer = None
+    if not user.is_anonymous:
         reviewer_qs = reviewer_qs.filter(user=user)
-        initial_reviewer = reviewer_qs.first().pk
+        first_reviewer = reviewer_qs.first()
+        if first_reviewer:
+            initial_reviewer = first_reviewer.pk
 
     return type(
         "PerformReviewForm",

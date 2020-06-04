@@ -42,9 +42,7 @@ class PerformReview(forms.Form):
         """Clean review_status."""
         data = self.cleaned_data["review_status"]
         if data == ModelReview.PENDING:
-            raise forms.ValidationError(
-                settings.MODELREVIEW_FORM_REVIEW_STATUS_VALIDATION_MSG
-            )
+            raise forms.ValidationError(REVIEW_FORM_WRONG_STATUS_MSG)
         return data
 
     def save(self):

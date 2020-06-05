@@ -1,0 +1,278 @@
+{% load i18n %}
+<!-- uncomment to use django.contrib.comments -->
+{# {% load comments %} #}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>{% trans "Submit Review" %}</title>
+    <meta name="description" content="Review Description">
+    <meta name="author" content="Kelvin Jayanoris">
+    <style>
+        .grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .column {
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .bigger {
+            flex: 2.5;
+        }
+
+        .halves .column {
+            flex: 0 0 50%;
+        }
+
+        .thirds .column {
+            flex: 0 0 33.3333%;
+        }
+
+        .fourths .column {
+            flex: 0 0 25%;
+        }
+
+        @media (max-width: 900px) {
+            .grid {
+                display: block;
+            }
+        }
+    </style>
+    <style>
+        section {
+            display: flex;
+            flex-flow: row wrap;
+        }
+
+        section>div {
+            flex: 1;
+            padding: 0.5rem;
+        }
+
+        input[type="radio"] {
+            display: none;
+        }
+
+        input[type="radio"]:not(:disabled)~label {
+            cursor: pointer;
+        }
+
+        input[type="radio"]:disabled~label {
+            color: #bcc2bf;
+            border-color: #bcc2bf;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        label {
+            display: block;
+            background: white;
+            border-radius: 3%;
+            padding: 0.7rem;
+            margin-bottom: 0;
+            text-align: center;
+            position: relative;
+            border: 1px solid #5562eb;
+        }
+
+        .btnbtn {
+            display: block;
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border-radius: 3%;
+            padding: 1rem;
+            margin-bottom: 0;
+            text-align: center;
+            position: relative;
+            border: 1px solid #4CAF50;
+            cursor: pointer;
+            font-weight: 900;
+        }
+
+        .btnbtn.info {
+            cursor: not-allowed;
+        }
+
+        .btnbtn.rejected {
+            background: #ff0000;
+        }
+
+        hr {
+            margin: 1rem 0;
+        }
+
+        .review_reason {
+            background-color: aliceblue;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
+            border-radius: 5%;
+        }
+
+        .review_reason::after {
+            content: "";
+            position: absolute;
+            top: -1.2rem;
+            left: 2rem;
+            border: 1rem solid transparent;
+            border-bottom-color: aliceblue;
+            display: block;
+            width: 0;
+        }
+
+        .comment-item {
+            background-color: #fbfbff;
+            margin-bottom: 0.6rem;
+        }
+
+        .comment-header {
+            margin-top: 0.2rem;
+            margin-bottom: -0.5rem;
+            font-size: 0.9rem;
+            color: #828282;
+        }
+
+        .commentarea textarea {
+            margin-top: 1rem;
+        }
+
+        .commentarea button {
+            margin-top: 0.5rem;
+        }
+
+        .btn-comment {
+            display: block;
+            padding: 0.2rem;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        textarea {
+            width: 100%;
+        }
+
+        input[type="radio"]:checked+label {
+            background: #5562eb;
+            color: white;
+        }
+
+        input[type="radio"]#review-reject:checked+label {
+            background: #ff0000;
+            border-color: #ff0000;
+        }
+
+        @media only screen and (max-width: 700px) {
+            section {
+                flex-direction: column;
+            }
+        }
+
+        .content-box {
+            margin: 0 auto;
+            max-width: 800px;
+        }
+
+        .non-field-errors,
+        .hidden-field-errors,
+        .status-field-errors {
+            font-size: 0.9rem;
+            color: #ff0000;
+        }
+
+        .status-field-errors div {
+            padding: 0 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="content-box">
+        <h1 style="text-align: center;">{% trans "Submit Review" %}</h1>
+        <div class="grid">
+            <div class="column">
+                <p>Please submit a review for this item</p>
+                <!--
+                    This section is meant to output details on the item being
+                    reviewed so that a review can make an informed decision.
+                -->
+            </div>
+            <div class="column">
+                <form method="POST" action="">
+                    {% csrf_token %}
+
+                    {% if form.non_field_errors %}
+                        <ul class="non-field-errors">
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+
+                    {% for hidden_field in form.hidden_fields %}
+                        <ul class="hidden-field-errors">
+                            {% if hidden_field.errors %}
+                                {% for error in hidden_field.errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            {% endif %}
+                        </ul>
+                        {{ hidden_field }}
+                    {% endfor %}
+
+                    {% if object.review_status == object.PENDING %}
+                        <section id="id_review_status">
+                            <div>
+                                <input type="radio" id="review-approve" name="review_status" value="1">
+                                <label for="review-approve">{% trans "Approve" %}</label>
+                            </div>
+                            <div>
+                                <input type="radio" id="review-reject" name="review_status" value="2">
+                                <label for="review-reject">{% trans "Reject" %}</label>
+                            </div>
+                        </section>
+                        {% for error in form.review_status.errors %}
+                            <section class="status-field-errors"><div>{{ error }}</div></section>
+                        {% endfor %}
+                        <section>
+                            <div>
+                                <button type="submit" class="btnbtn">{% trans "Submit Review" %}</button>
+                            </div>
+                        </section>
+                    {% elif object.review_status == object.APPROVED %}
+                        <section>
+                            <div>
+                                <button type="button" class="btnbtn info" disabled>{% trans "Approved" %}</button>
+                            </div>
+                        </section>
+                    {% elif object.review_status == object.REJECTED %}
+                        <section>
+                            <div>
+                                <button type="button" class="btnbtn info rejected" disabled>{% trans "Rejected" %}</button>
+                            </div>
+                        </section>
+                    {% endif %}
+                </form>
+            </div>
+        </div>
+        {% if object.content_object.review_reason %}
+        <div class="grid" style="position:relative;">
+            <div class="column review_reason">
+                {{ object.content_object.review_reason|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+        <!-- COMMENTS SECTION -->
+        <!-- uncomment these to show comments list and form using django.contrib.comments -->
+        <!-- <hr /> -->
+        {# {% render_comment_list for object %} #}
+        {# {% render_comment_form for object %} #}
+        <!-- End of comments -->
+        <!-- END COMMENTS SECTION -->
+    </div>
+</body>
+
+</html>

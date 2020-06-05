@@ -1,0 +1,17 @@
+{% if comment_list %}
+<div class="grid">
+    <div class="column comments-list">
+        {% for comment in comment_list %}
+        <section id="c{{ comment.id }}">
+            <div class="comment-item">
+                <div class="comment-header"><span>{{ comment.name }}</span> - <span>{{ comment.submit_date }}</span></div>
+                <div class="comment-body">
+                    <p>{{ comment.comment }}</p>
+                </div>
+            </div>
+        </section>
+        {% endfor %}
+    </div>
+</div>
+<hr />
+{% endif %}

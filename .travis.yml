@@ -27,7 +27,7 @@ services:
 addons:
   postgresql: "10"
 before_script:
-  - psql -c 'CREATE DATABASE django_approvals;' -U postgres
+  - psql -c 'CREATE DATABASE django_model_reviews;' -U postgres
 install:
   - pip install tox
 script: tox

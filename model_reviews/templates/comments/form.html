@@ -1,0 +1,45 @@
+{% load comments i18n %}
+<div class="grid">
+    <div class="column commentarea">
+        <form action="{% comment_form_target %}" method="post">
+            {% csrf_token %}
+            {% if next %}
+                <div><input type="hidden" name="next" value="{{ next }}"/></div>
+            {% endif %}
+            {% for field in form %}
+                {% if field.is_hidden %}
+                <div>{{ field }}</div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- start user name and email fields -->
+            <div>
+                <input type="hidden" name="name" name="id_name"
+                value="{% firstof request.user.get_full_name request.user.username %}" />
+            </div>
+            <div>
+                <input type="hidden" name="email" id="id_email"
+                {% if request.user.email %}
+                value="{{ request.user.email }}"
+                {% else %}
+                value="{{ request.user.username }}@example.com"
+                {% endif %}
+                />
+            </div>
+            <!-- end user name and email fields -->
+            <!-- honeypot protects against spam -->
+            <div style="display:none;">
+                <label for="id_honeypot">{% trans "silence is golden" %}</label>
+                <input type="text" name="honeypot" id="id_honeypot">
+            </div>
+            <!-- next ensures we redirect back to the same page after commenting -->
+            <div><input type="hidden" name="next" value="{{ request.path }}" /></div>
+            <div>
+                <textarea name="comment" cols="40" rows="5" maxlength="3000" required id="id_comment"></textarea>
+            </div>
+            <div>
+                <button type="submit" class="btn-comment">{% trans "Submit Comment" %}</button>
+            </div>
+        </form>
+    </div>
+</div>

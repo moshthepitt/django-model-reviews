@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Settings for tests
-"""
+"""Settings for tests."""
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -16,13 +14,16 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     # custom
-    "approvals",
+    "model_reviews",
+    "tests.test_app",
+    # third party
+    "django_comments",
 ]
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "django_approvals",
+        "NAME": "django_model_reviews",
         "USER": "postgres",
         "PASSWORD": "",
         "HOST": "127.0.0.1",
@@ -79,6 +80,9 @@ SECRET_KEY = "i love oov"
 MEDIA_ROOT = "/tmp/"
 
 SITE_ID = 1
+
+# snapshot testing
+TEST_RUNNER = "snapshottest.django.TestRunner"
 
 # try and load local_settings if present
 try:

@@ -12,7 +12,7 @@ class TestModel(AbstractReview):
     name = models.CharField(max_length=100)
 
     # model_review options
-    side_effection_function = "tests.test_app.models.side_effects"
+    side_effect_function = "tests.test_app.models.side_effects"
 
     class Meta:
         """Meta definition for TestModel."""

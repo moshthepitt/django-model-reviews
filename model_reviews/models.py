@@ -62,7 +62,7 @@ class AbstractReview(BaseReview):
     # List of fields that need moderation/review
     monitored_fields: List[str] = ["review_status", "review_date"]
     # path to function that will be run after successful review
-    side_effection_function: Optional[str] = None
+    side_effect_function: Optional[str] = None
     # path to function that will be used to determine reviewers
     set_reviewers_function: Optional[str] = None
     # path to function that will be used to determine the user for a review object
@@ -115,8 +115,8 @@ class AbstractReview(BaseReview):
         This method runs the side effect function defined on the approvable model.
         The side effect is run once after an approval/rejection.
         """
-        if self.side_effection_function:
-            side_effect = import_string(self.side_effection_function)
+        if self.side_effect_function:
+            side_effect = import_string(self.side_effect_function)
             side_effect(review_obj=review_obj)
 
 

@@ -21,7 +21,7 @@ if sys.argv[-1] == "publish":
     sys.exit()
 
 setup(
-    name="django-model_reviews",
+    name="django-model-reviews",
     version=reviews.__version__,
     description="Easy moderation of changes made to Django models",
     long_description=README,

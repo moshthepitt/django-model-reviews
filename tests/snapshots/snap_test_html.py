@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 # snapshottest: v1 - https://goo.gl/zC4yUc
-# pylint: disable=missing-module-docstring,line-too-long,too-many-lines
-# flake8: noqa
 from __future__ import unicode_literals
 
 from snapshottest import Snapshot
+
 
 snapshots = Snapshot()
 
@@ -214,21 +213,21 @@ snapshots['TestHTML::test_initial_form 1'] = '''
                 <form method="POST" action="">
                     <input type="hidden" name="csrfmiddlewaretoken" value="CSRF-I_LOVE-OOV">
 
+                    
 
-
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="review" value="12408" id="id_review">
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="reviewer" id="id_reviewer">
+                    
 
-
-
+                    
                         <section id="id_review_status">
                             <div>
                                 <input type="radio" id="review-approve" name="review_status" value="1">
@@ -239,28 +238,28 @@ snapshots['TestHTML::test_initial_form 1'] = '''
                                 <label for="review-reject">Reject</label>
                             </div>
                         </section>
-
+                        
                         <section>
                             <div>
                                 <button type="submit" class="btnbtn">Submit Review</button>
                             </div>
                         </section>
-
+                    
                 </form>
             </div>
         </div>
-
+        
         <div class="grid" style="position:relative;">
             <div class="column review_reason">
                 <p>Taking some time off after the current Reveal contract(s) come to an end.</p>
             </div>
         </div>
-
+        
         <!-- COMMENTS SECTION -->
         <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->
-
-
+        
+        
         <!-- End of comments -->
         <!-- END COMMENTS SECTION -->
     </div>
@@ -475,29 +474,29 @@ snapshots['TestHTML::test_form_errors 1'] = '''
                 <form method="POST" action="">
                     <input type="hidden" name="csrfmiddlewaretoken" value="CSRF-I_LOVE-OOV">
 
+                    
 
-
-
+                    
                         <ul class="hidden-field-errors">
-
-
+                            
+                                
                                     <li>Please ensure that you are reviewing the correct item.</li>
-
-
+                                
+                            
                         </ul>
                         <input type="hidden" name="review" value="1337" id="id_review">
-
+                    
                         <ul class="hidden-field-errors">
-
-
+                            
+                                
                                     <li>Please ensure that you are reviewing the correct item.</li>
-
-
+                                
+                            
                         </ul>
                         <input type="hidden" name="reviewer" value="1337" id="id_reviewer">
+                    
 
-
-
+                    
                         <section id="id_review_status">
                             <div>
                                 <input type="radio" id="review-approve" name="review_status" value="1">
@@ -508,24 +507,24 @@ snapshots['TestHTML::test_form_errors 1'] = '''
                                 <label for="review-reject">Reject</label>
                             </div>
                         </section>
-
+                        
                             <section class="status-field-errors"><div>Please submit an approval or rejection.</div></section>
-
+                        
                         <section>
                             <div>
                                 <button type="submit" class="btnbtn">Submit Review</button>
                             </div>
                         </section>
-
+                    
                 </form>
             </div>
         </div>
-
+        
         <!-- COMMENTS SECTION -->
         <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->
-
-
+        
+        
         <!-- End of comments -->
         <!-- END COMMENTS SECTION -->
     </div>
@@ -740,36 +739,36 @@ snapshots['TestHTML::test_review_approved 1'] = '''
                 <form method="POST" action="">
                     <input type="hidden" name="csrfmiddlewaretoken" value="CSRF-I_LOVE-OOV">
 
+                    
 
-
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="review" value="12410" id="id_review">
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="reviewer" id="id_reviewer">
+                    
 
-
-
+                    
                         <section>
                             <div>
                                 <button type="button" class="btnbtn info" disabled>Approved</button>
                             </div>
                         </section>
-
+                    
                 </form>
             </div>
         </div>
-
+        
         <!-- COMMENTS SECTION -->
         <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->
-
-
+        
+        
         <!-- End of comments -->
         <!-- END COMMENTS SECTION -->
     </div>
@@ -984,36 +983,36 @@ snapshots['TestHTML::test_review_rejected 1'] = '''
                 <form method="POST" action="">
                     <input type="hidden" name="csrfmiddlewaretoken" value="CSRF-I_LOVE-OOV">
 
+                    
 
-
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="review" value="12411" id="id_review">
-
+                    
                         <ul class="hidden-field-errors">
-
+                            
                         </ul>
                         <input type="hidden" name="reviewer" id="id_reviewer">
+                    
 
-
-
+                    
                         <section>
                             <div>
                                 <button type="button" class="btnbtn info rejected" disabled>Rejected</button>
                             </div>
                         </section>
-
+                    
                 </form>
             </div>
         </div>
-
+        
         <!-- COMMENTS SECTION -->
         <!-- uncomment these to show comments list and form using django.contrib.comments -->
         <!-- <hr /> -->
-
-
+        
+        
         <!-- End of comments -->
         <!-- END COMMENTS SECTION -->
     </div>

@@ -27,7 +27,14 @@ class TestHTML(TestCase):
             review_reason="Taking some time off after the current Reveal contract(s) come to an end.",  # noqa  # pylint:disable=line-too-long
         )
         obj_type = ContentType.objects.get_for_model(test_model)
-        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        # we want to control the pk so we force create a new review
+        ModelReview.objects.get(content_type=obj_type, object_id=test_model.id).delete()
+        review = mommy.make(
+            "model_reviews.ModelReview",
+            content_type=obj_type,
+            object_id=test_model.id,
+            id=12408,
+        )
 
         res = self.client.get(f"/review/{review.pk}")
         self.assertMatchSnapshot(res.content.decode("utf-8"))
@@ -39,7 +46,14 @@ class TestHTML(TestCase):
 
         test_model = mommy.make("test_app.TestModel", name="Test 1",)
         obj_type = ContentType.objects.get_for_model(test_model)
-        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        # we want to control the pk so we force create a new review
+        ModelReview.objects.get(content_type=obj_type, object_id=test_model.id).delete()
+        review = mommy.make(
+            "model_reviews.ModelReview",
+            content_type=obj_type,
+            object_id=test_model.id,
+            id=12409,
+        )
 
         data = {
             "review": 1337,
@@ -57,7 +71,14 @@ class TestHTML(TestCase):
 
         test_model = mommy.make("test_app.TestModel2", name="Test 2",)
         obj_type = ContentType.objects.get_for_model(test_model)
-        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        # we want to control the pk so we force create a new review
+        ModelReview.objects.get(content_type=obj_type, object_id=test_model.id).delete()
+        review = mommy.make(
+            "model_reviews.ModelReview",
+            content_type=obj_type,
+            object_id=test_model.id,
+            id=12410,
+        )
         review.review_status = ModelReview.APPROVED
         review.save()
 
@@ -71,7 +92,14 @@ class TestHTML(TestCase):
 
         test_model = mommy.make("test_app.TestModel2", name="Test 2",)
         obj_type = ContentType.objects.get_for_model(test_model)
-        review = ModelReview.objects.get(content_type=obj_type, object_id=test_model.id)
+        # we want to control the pk so we force create a new review
+        ModelReview.objects.get(content_type=obj_type, object_id=test_model.id).delete()
+        review = mommy.make(
+            "model_reviews.ModelReview",
+            content_type=obj_type,
+            object_id=test_model.id,
+            id=12411,
+        )
         review.review_status = ModelReview.REJECTED
         review.save()
 

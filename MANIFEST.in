@@ -1,0 +1,4 @@
+include LICENSE
+include README.md
+recursive-include model_reviews/static *
+recursive-include model_reviews/templates *

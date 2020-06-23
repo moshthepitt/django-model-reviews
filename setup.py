@@ -30,7 +30,7 @@ setup(
     author="Kelvin Jayanoris",
     author_email="kelvin@jayanoris.com",
     url="https://github.com/moshthepitt/django-model-reviews",
-    packages=find_packages(exclude=["docs", "tests"]),
+    packages=find_packages(exclude=["docs", "*.egg-info", "build", "tests.*", "tests"]),
     install_requires=["Django >=2.2", "django-braces", "django-contrib-comments"],
     classifiers=[
         "Programming Language :: Python",

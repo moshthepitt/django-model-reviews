@@ -1,4 +1,4 @@
-"""Setup.py for django-vega-admin."""
+"""Setup.py for django-model-reviews."""
 import os
 import sys
 
@@ -13,6 +13,7 @@ if sys.argv[-1] == "publish":
     if os.system("pip freeze | grep twine"):
         print("twine not installed.\nUse `pip install twine`.\nExiting.")
         sys.exit()
+    os.system("rm -rf build/ *.egg-info/")
     os.system("python setup.py sdist bdist_wheel")
     os.system("twine upload dist/* --skip-existing")
     print("You probably want to also tag the version now:")

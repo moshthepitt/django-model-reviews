@@ -1,5 +1,6 @@
 """Signals module for model_reviews."""
 from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, pre_save
 from django.dispatch.dispatcher import receiver
 from django.utils.module_loading import import_string
@@ -23,17 +24,22 @@ def approvable_before_save(  # pylint: disable=bad-continuation
     if isinstance(instance, AbstractReview) and not isinstance(instance, ModelReview):
         if instance.pk is not None:  # deal with updated instances only
             obj_type = ContentType.objects.get_for_model(instance)
-            review, _ = ModelReview.objects.get_or_create(
-                content_type=obj_type, object_id=instance.pk
-            )
-            diff = review.get_diff(source=instance)
+            try:
+                obj_type.get_object_for_this_type(pk=instance.pk)
+            except ObjectDoesNotExist:
+                pass
+            else:
+                review, _ = ModelReview.objects.get_or_create(
+                    content_type=obj_type, object_id=instance.pk
+                )
+                diff = review.get_diff(source=instance)
 
-            if review.needs_review():
-                if diff:
-                    # only update the sandbox if review is needed and there is a diff
-                    review.update_sandbox(source=instance)
-                    # only revert the instance if there is a diff
-                    instance.revert()
+                if review.needs_review():
+                    if diff:
+                        # only update the sandbox if review is needed and there is a diff
+                        review.update_sandbox(source=instance)
+                        # only revert the instance if there is a diff
+                        instance.revert()
 
 
 @receiver(post_save)

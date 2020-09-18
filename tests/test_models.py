@@ -180,3 +180,15 @@ class TestModels(TestCase):
                 content_type=obj_type, object_id=test_model.id
             ).count(),
         )
+
+    def test_approvable_before_save_invalid(self):
+        """
+        Test approvable_before_save with new objects.
+
+        This ensures that this signal does not crash for new object, even though
+        it is meant for objects being updated.
+        """
+        try:
+            mommy.make("test_app.TestModel", name="Test 3", id=1337)
+        except AttributeError:
+            self.fail("approvable_before_save AttributeError!")

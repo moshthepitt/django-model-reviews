@@ -237,6 +237,7 @@ class Reviewer(BaseReview):
 
         verbose_name = _("Reviewer")
         verbose_name_plural = _("Reviewers")
+        unique_together = [["user", "review"]]
 
     def __str__(self):
         """Unicode representation of Reviewer."""

@@ -112,8 +112,10 @@ class TestForms(TestCase):
         self.assertEqual(mocked_now, reviewer.review_date)
         self.assertEqual(ModelReview.APPROVED, reviewer.review_status)
 
+    # pylint: disable=too-many-locals
+    @patch("tests.test_app.models.get_next_reviewers")
     @patch("django.utils.timezone.now")
-    def test_successful_performreview_multiple_reviewers_levels(self, mock):
+    def test_successful_performreview_multiple_reviewers_levels(self, mock, next_mock):
         """Test successful PerformReview with multiple reviewers of different levels."""
         mocked_now = datetime(2010, 1, 1, tzinfo=pytz.timezone(settings.TIME_ZONE))
         mock.return_value = mocked_now
@@ -153,6 +155,8 @@ class TestForms(TestCase):
         review.refresh_from_db()
         reviewer.refresh_from_db()
         test_model.refresh_from_db()
+
+        next_mock.assert_called_once_with(review_obj=review)
 
         self.assertEqual(ModelReview.PENDING, review.review_status)
         self.assertEqual(ModelReview.PENDING, test_model.review_status)

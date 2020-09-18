@@ -13,6 +13,7 @@ class TestModel(AbstractReview):
 
     # model_review options
     side_effect_function = "tests.test_app.models.side_effects"
+    get_next_reviewers_function = "tests.test_app.models.get_next_reviewers"
 
     class Meta:
         """Meta definition for TestModel."""
@@ -41,6 +42,15 @@ class TestModel2(AbstractReview):
 def side_effects(review_obj: models.Model):  # pylint: disable=unused-argument
     """
     Run side effects.
+
+    This is a dummy side effects function, for testing.
+    """
+    return None
+
+
+def get_next_reviewers(review_obj: models.Model):  # pylint: disable=unused-argument
+    """
+    Get next reviewers.
 
     This is a dummy side effects function, for testing.
     """

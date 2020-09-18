@@ -1,5 +1,6 @@
 """utils module."""
 from django.db.models import Max
+from django.utils.module_loading import import_string
 
 from model_reviews.models import ModelReview, Reviewer
 
@@ -32,6 +33,17 @@ def perform_review(review: ModelReview):
             .order_by("-review_date", "-level")
             .first()
         )
+        # if none of the highest level people has done a review then we could
+        # be in a situation where there are tiered reviews i.e. reviews start with
+        # low level people and progress up the hierarchy after they do the reviews
+        # so we check if a get_next_reviewers_function exists and then call it
+        if not relevant_reviewer:
+            if review.content_object:
+                if review.content_object.get_next_reviewers_function:
+                    get_next_reviewers_function = import_string(
+                        review.content_object.get_next_reviewers_function
+                    )
+                    get_next_reviewers_function(review_obj=review)
 
     if relevant_reviewer:
         # save review as done

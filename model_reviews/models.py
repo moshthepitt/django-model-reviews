@@ -75,7 +75,8 @@ class AbstractReview(BaseReview):
     review_complete_notify_function: Optional[
         str
     ] = "model_reviews.emails.send_review_complete_notice"
-
+    # path to function that will be used to determine reviewers
+    get_next_reviewers_function: Optional[str] = None
     # emails options
     review_request_email_subject = _(REVIEW_REQUEST_EMAIL_SUBJ)
     review_request_email_body = _(REVIEW_REQUEST_EMAIL_TXT)
@@ -237,6 +238,7 @@ class Reviewer(BaseReview):
 
         verbose_name = _("Reviewer")
         verbose_name_plural = _("Reviewers")
+        unique_together = [["user", "review"]]
 
     def __str__(self):
         """Unicode representation of Reviewer."""

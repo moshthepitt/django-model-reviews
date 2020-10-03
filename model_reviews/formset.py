@@ -80,7 +80,7 @@ def model_review_formset_factory(  # pylint: disable=bad-continuation,too-many-a
     can_order=False,
     can_delete=False,
     max_num=0,
-    validate_max=False,
+    validate_max=True,
     min_num=0,
     validate_min=False,
 ):

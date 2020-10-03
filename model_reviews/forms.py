@@ -1,12 +1,8 @@
 """forms module for model_reviews."""
-from typing import List, Optional, Union
-
 from django import forms
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import transaction
-from django.db.models import QuerySet
-from django.forms import BaseFormSet, formset_factory
 from django.utils import timezone
 from django.utils.translation import gettext as _
 
@@ -65,66 +61,6 @@ class PerformReview(forms.Form):
             perform_review(review=review)
 
 
-class ModelReviewFormSet(BaseFormSet):
-    """
-    Custom BaseFormSet for model reviews.
-
-    We basically want to make it possibly to pass in a list of form classes
-    that will be used to generate the formset.
-    """
-
-    def __init__(self, form_list: List[PerformReview], *args, **kwargs):
-        """
-        Initialize.
-
-        The only thing that we want to do here is add "form_list" as a kwarg
-        """
-        self.form_list = form_list or []
-        super().__init__(*args, **kwargs)
-
-    def _construct_form(self, i, **kwargs):
-        """
-        Instantiate and return the i-th form instance in a formset.
-
-        We are modifying this function by adding the ability of getting the form
-        from self.form_list.
-        """
-        defaults = {
-            "auto_id": self.auto_id,
-            "prefix": self.add_prefix(i),
-            "error_class": self.error_class,
-            # Don't render the HTML 'required' attribute as it may cause
-            # incorrect validation for extra, optional, and deleted
-            # forms in the formset.
-            "use_required_attribute": False,
-        }
-        if self.is_bound:
-            defaults["data"] = self.data
-            defaults["files"] = self.files
-        if self.initial and "initial" not in kwargs:
-            try:
-                defaults["initial"] = self.initial[i]
-            except IndexError:
-                pass
-        # Allow extra forms to be empty, unless they're part of the minimum forms.
-        # pylint: disable=no-member
-        if i >= self.initial_form_count() and i >= self.min_num:
-            defaults["empty_permitted"] = True
-        defaults.update(kwargs)
-
-        # this is the custom part of this sub-classed method
-        try:
-            form_class = self.form_list[i]
-        except IndexError:
-            form = self.form(**defaults)  # pylint: disable=no-member
-        else:
-            form = form_class(**defaults)
-        # the custom part ends here
-
-        self.add_fields(form, i)
-        return form
-
-
 def get_review_form(review: ModelReview, user: User):
     """Get review form for a particular review object."""
     review_qs = ModelReview.objects.filter(id=review.id)
@@ -162,34 +98,3 @@ def get_review_form(review: ModelReview, user: User):
             ),
         },
     )
-
-
-def get_review_formset(  # pylint: disable=bad-continuation
-    user: User, queryset: Optional[Union[QuerySet, List[ModelReview]]] = None
-):
-    """
-    Get a formset of review forms.
-
-    This is useful for doing bulk reviews.
-    """
-    if queryset is None:
-        try:
-            queryset = ModelReview.objects.filter(
-                reviewer__user=user, review_status=ModelReview.PENDING
-            )
-        except TypeError:
-            # this most likely means that the user is AnonymousUser
-            queryset = ModelReview.objects.none()
-
-    ReviewFormSet = formset_factory(
-        form=PerformReview,
-        formset=ModelReviewFormSet,
-        extra=queryset.count(),
-        max_num=queryset.count(),
-    )
-    review_forms: List[PerformReview] = []
-    for item in queryset:
-        review_form = get_review_form(review=item, user=user)
-        review_forms.append(review_form)
-
-    return ReviewFormSet(form_list=review_forms)

@@ -84,7 +84,12 @@ def model_review_formset_factory(  # pylint: disable=bad-continuation,too-many-a
     min_num=0,
     validate_min=False,
 ):
-    """Return a FormSet for the given form class."""
+    """
+    Return a FormSet for the given form class.
+
+    This is based on django.forms.formset_factory and basically just adds form_list
+    to the FormSet class.
+    """
     attrs = {
         "form": form,
         "form_list": form_list,

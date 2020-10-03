@@ -32,16 +32,27 @@ class TestForms(TestCase):
         user1 = mommy.make("auth.User", username="joe")
         user2 = mommy.make("auth.User", username="jane")
 
-        for _ in range(1, 4):
+        for i in range(1, 4):
             test_model = mommy.make("test_app.TestModel", name="Test")
             obj_type = ContentType.objects.get_for_model(test_model)
             review = ModelReview.objects.get(
                 content_type=obj_type, object_id=test_model.id
             )
+            # we want to control the pk so we force create a new review
+            ModelReview.objects.get(
+                content_type=obj_type, object_id=test_model.id
+            ).delete()
+            review = mommy.make(
+                "model_reviews.ModelReview",
+                content_type=obj_type,
+                object_id=test_model.id,
+                id=1337 + i,
+            )
+
             review.user = user1
             review.save()
 
-            mommy.make("model_reviews.Reviewer", user=user2, review=review)
+            mommy.make("model_reviews.Reviewer", user=user2, review=review, id=1337 + i)
 
         formset_class = get_review_formset(user=user2)
 

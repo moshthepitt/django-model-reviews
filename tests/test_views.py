@@ -137,16 +137,27 @@ class TestViews(TestCase):
 
     def test_bulk_reviews(self):
         """Test BulkReviewsView."""
-        for _ in range(0, 12):
+        ModelReview.objects.all().delete()
+        Reviewer.objects.all().delete()
+        for i in range(0, 12):
             test_model = mommy.make("test_app.TestModel", name="Test")
             obj_type = ContentType.objects.get_for_model(test_model)
-            review = ModelReview.objects.get(
+            # we want to control the pk so we force create a new review
+            ModelReview.objects.get(
                 content_type=obj_type, object_id=test_model.id
+            ).delete()
+            review = mommy.make(
+                "model_reviews.ModelReview",
+                content_type=obj_type,
+                object_id=test_model.id,
+                id=9000 + i,
             )
             review.user = self.user
             review.save()
 
-            mommy.make("model_reviews.Reviewer", user=self.reviewer, review=review)
+            mommy.make(
+                "model_reviews.Reviewer", user=self.reviewer, review=review, id=9000 + i
+            )
 
         self.client.force_login(user=self.reviewer)
         res = self.client.get("/bulk")
@@ -160,14 +171,14 @@ class TestViews(TestCase):
             "form-MAX_NUM_FORMS": 12,
         }
 
-        for idx, review in enumerate(ModelReview.objects.filter(user=self.user)):
+        for idx, reviewer in enumerate(Reviewer.objects.all()):
             data[f"form-{idx}-review_status"] = ModelReview.APPROVED
-            data[f"form-{idx}-reviewer"] = Reviewer.objects.get(review=review).pk
-            data[f"form-{idx}-review"] = review.pk
+            data[f"form-{idx}-reviewer"] = reviewer.pk
+            data[f"form-{idx}-review"] = reviewer.review.pk
 
         # force an error
         data["form-11-review_status"] = ModelReview.PENDING
-
+        self.client.force_login(user=self.reviewer)
         res = self.client.post("/bulk", data)
         self.assertEqual(res.status_code, 200)
         self.assertTrue(
@@ -176,7 +187,7 @@ class TestViews(TestCase):
 
         # fix the error
         data["form-11-review_status"] = ModelReview.REJECTED
-
+        self.client.force_login(user=self.reviewer)
         res = self.client.post("/bulk", data)
         self.assertEqual(res.status_code, 302)
         self.assertTrue(

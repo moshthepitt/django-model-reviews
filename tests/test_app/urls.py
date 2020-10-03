@@ -10,4 +10,8 @@ def homeview(request):
     return HttpResponse("<h1>home page</h1>")
 
 
-urlpatterns = [path("", homeview), path("review/<int:pk>", views.ReviewView.as_view())]
+urlpatterns = [
+    path("", homeview),
+    path("bulk", views.BulkReviewsView.as_view()),
+    path("review/<int:pk>", views.ReviewView.as_view()),
+]

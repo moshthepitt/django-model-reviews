@@ -174,3 +174,9 @@ class BulkReviewsView(MessageMixin, TemplateView):
         if formset.is_valid():
             return self.formset_valid(formset)
         return self.formset_invalid(formset)
+
+    # PUT is a valid HTTP verb for creating (with a known URL) or editing an
+    # object, note that browsers only support POST for now.
+    def put(self, *args, **kwargs):
+        """Handle PUT requests."""
+        return self.post(*args, **kwargs)

@@ -154,6 +154,7 @@ class ModelReview(BaseReview):
         """Meta definition for ModelReview."""
 
         abstract = False
+        app_label = "model_reviews"
         verbose_name = _("Model Review")
         verbose_name_plural = _("Model Reviews")
         indexes = [models.Index(fields=["content_type", "object_id"])]
@@ -236,6 +237,7 @@ class Reviewer(BaseReview):
     class Meta:
         """Meta definition for Reviewer."""
 
+        app_label = "model_reviews"
         verbose_name = _("Reviewer")
         verbose_name_plural = _("Reviewers")
         unique_together = [["user", "review"]]

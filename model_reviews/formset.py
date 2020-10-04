@@ -3,7 +3,7 @@ from typing import List, Optional, Union
 
 from django.contrib.auth.models import User
 from django.db.models import QuerySet
-from django.forms import BaseFormSet
+from django.forms import BaseFormSet, Form
 
 from model_reviews.forms import PerformReview, get_review_form
 from model_reviews.models import ModelReview
@@ -106,7 +106,10 @@ def model_review_formset_factory(  # pylint: disable=bad-continuation,too-many-a
 
 
 def get_review_formset(  # pylint: disable=bad-continuation
-    user: User, queryset: Optional[Union[QuerySet, List[ModelReview]]] = None
+    user: User,
+    queryset: Optional[Union[QuerySet, List[ModelReview]]] = None,
+    form_class: Form = PerformReview,
+    formset_class: BaseFormSet = ModelReviewFormSet,
 ):
     """
     Get a formset of review forms.
@@ -128,9 +131,9 @@ def get_review_formset(  # pylint: disable=bad-continuation
         review_forms.append(review_form)
 
     ReviewFormSet = model_review_formset_factory(
-        form=PerformReview,
+        form=form_class,
         form_list=review_forms,
-        formset=ModelReviewFormSet,
+        formset=formset_class,
         extra=queryset.count(),
         max_num=queryset.count(),
     )

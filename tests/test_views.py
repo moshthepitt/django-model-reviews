@@ -6,7 +6,7 @@ from model_mommy import mommy
 
 from model_reviews import constants
 from model_reviews.forms import PerformReview
-from model_reviews.models import ModelReview
+from model_reviews.models import ModelReview, Reviewer
 from model_reviews.views import ReviewDisplay
 
 
@@ -134,3 +134,69 @@ class TestViews(TestCase):
             {"review": [constants.REVIEW_FORM_WRONG_REVIEW_MSG]},
             res.context["form"].errors,
         )
+
+    def test_bulk_reviews(self):
+        """Test BulkReviewsView."""
+        ModelReview.objects.all().delete()
+        Reviewer.objects.all().delete()
+        for i in range(0, 12):
+            test_model = mommy.make("test_app.TestModel", name="Test")
+            obj_type = ContentType.objects.get_for_model(test_model)
+            # we want to control the pk so we force create a new review
+            ModelReview.objects.get(
+                content_type=obj_type, object_id=test_model.id
+            ).delete()
+            review = mommy.make(
+                "model_reviews.ModelReview",
+                content_type=obj_type,
+                object_id=test_model.id,
+                id=9000 + i,
+            )
+            review.user = self.user
+            review.save()
+
+            mommy.make(
+                "model_reviews.Reviewer", user=self.reviewer, review=review, id=9000 + i
+            )
+
+        self.client.force_login(user=self.reviewer)
+        res = self.client.get("/bulk")
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.template_name[0], "model_reviews/bulk.html")
+
+        data = {
+            "form-TOTAL_FORMS": 12,
+            "form-INITIAL_FORMS": 0,
+            "form-MIN_NUM_FORMS": 0,
+            "form-MAX_NUM_FORMS": 12,
+        }
+
+        for idx, reviewer in enumerate(Reviewer.objects.all()):
+            data[f"form-{idx}-review_status"] = ModelReview.APPROVED
+            data[f"form-{idx}-reviewer"] = reviewer.pk
+            data[f"form-{idx}-review"] = reviewer.review.pk
+
+        # force an error
+        data["form-11-review_status"] = ModelReview.PENDING
+        self.client.force_login(user=self.reviewer)
+        res = self.client.post("/bulk", data)
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(
+            constants.REVIEW_FORMSET_FAIL_MSG in res.cookies["messages"].value
+        )
+
+        # fix the error
+        data["form-11-review_status"] = ModelReview.REJECTED
+        self.client.force_login(user=self.reviewer)
+        res = self.client.post("/bulk", data)
+        self.assertEqual(res.status_code, 302)
+        self.assertTrue(
+            constants.REVIEW_FORMSET_SUCCESS_MSG in res.cookies["messages"].value
+        )
+
+        for review in ModelReview.objects.filter(user=self.user):
+            reviewer = Reviewer.objects.get(review=review)
+            self.assertNotEqual(ModelReview.PENDING, review.review_status)
+            self.assertEqual(review.review_status, review.content_object.review_status)
+            self.assertEqual(True, reviewer.reviewed)
+            self.assertEqual(review.review_status, reviewer.review_status)

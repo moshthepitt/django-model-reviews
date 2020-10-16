@@ -1,4 +1,5 @@
 """Signals module for model_reviews."""
+from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models.signals import post_save, pre_save
@@ -6,7 +7,6 @@ from django.dispatch.dispatcher import receiver
 from django.utils.module_loading import import_string
 
 from model_reviews.models import AbstractReview, ModelReview, Reviewer
-from model_reviews.utils import process_review
 
 
 @receiver(pre_save)
@@ -79,7 +79,10 @@ def modelreview_after_save(  # pylint: disable=bad-continuation
 ):  # pylint: disable=unused-argument
     """Perform actions after the ModelReview object has been saved."""
     if not instance.needs_review():
-        process_review(instance)
+        process_review_function = import_string(
+            settings.MODELREVIEW_PROCESS_REVIEW_FUNCTION
+        )
+        process_review_function(instance)
     if instance.content_object:
         if instance.content_object.set_reviewers_function:
             set_reviewers_function = import_string(

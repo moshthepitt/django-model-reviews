@@ -13,6 +13,8 @@ def process_review(instance: ModelReview):
     reviewed_obj.save()
     # side effects
     reviewed_obj.run_side_effect(review_obj=instance)
+    # send notification
+    instance.send_review_complete_notification()
 
 
 def perform_review(review: ModelReview):

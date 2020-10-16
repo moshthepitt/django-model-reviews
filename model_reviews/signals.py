@@ -73,8 +73,7 @@ def modelreview_before_save(  # pylint: disable=bad-continuation
             set_user_function(review_obj=instance)
 
 
-@receiver(post_save, sender=ModelReview)
-def modelreview_after_save(  # pylint: disable=bad-continuation
+def modelreview_after_save_func(  # pylint: disable=bad-continuation
     sender, instance, raw, created, **kwargs
 ):  # pylint: disable=unused-argument
     """Perform actions after the ModelReview object has been saved."""
@@ -89,6 +88,15 @@ def modelreview_after_save(  # pylint: disable=bad-continuation
                 instance.content_object.set_reviewers_function
             )
             set_reviewers_function(review_obj=instance)
+
+
+@receiver(post_save, sender=ModelReview)
+def modelreview_after_save(  # pylint: disable=bad-continuation
+    sender, instance, raw, created, **kwargs
+):  # pylint: disable=unused-argument
+    """Perform actions after the ModelReview object has been saved."""
+    signal_function = import_string(settings.MODELREVIEW_PROCESS_AFTER_SAVE_FUNCTION)
+    signal_function(sender, instance, raw, created, **kwargs)
 
 
 @receiver(post_save, sender=Reviewer)
